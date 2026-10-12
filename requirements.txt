@@ -1,0 +1,3 @@
+PySide6>=6.8,<7
+pydantic-ai-slim[openai]==2.37.0
+pywin32>=306; platform_system == "Windows"

@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidWorksAssistant.EventBridge", "SolidWorksAssistant.EventBridge\SolidWorksAssistant.EventBridge.csproj", "{4D8F01A2-1DF8-4B9A-A7C5-6483AC6B3C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidWorksAssistant.EventBridge.Tests", "SolidWorksAssistant.EventBridge.Tests\SolidWorksAssistant.EventBridge.Tests.csproj", "{49A9BEEE-1E5A-4614-840C-8C7485094904}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D8F01A2-1DF8-4B9A-A7C5-6483AC6B3C74}.Debug|x64.ActiveCfg = Debug|x64
+		{4D8F01A2-1DF8-4B9A-A7C5-6483AC6B3C74}.Debug|x64.Build.0 = Debug|x64
+		{4D8F01A2-1DF8-4B9A-A7C5-6483AC6B3C74}.Release|x64.ActiveCfg = Release|x64
+		{4D8F01A2-1DF8-4B9A-A7C5-6483AC6B3C74}.Release|x64.Build.0 = Release|x64
+		{49A9BEEE-1E5A-4614-840C-8C7485094904}.Debug|x64.ActiveCfg = Debug|x64
+		{49A9BEEE-1E5A-4614-840C-8C7485094904}.Debug|x64.Build.0 = Debug|x64
+		{49A9BEEE-1E5A-4614-840C-8C7485094904}.Release|x64.ActiveCfg = Release|x64
+		{49A9BEEE-1E5A-4614-840C-8C7485094904}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

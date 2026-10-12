@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solidworks-ai-assistant"
+version = "5.3.2"
+description = "Continuous SolidWorks modeling tasks with verified stages and human feedback"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "PySide6>=6.8,<7",
+  "pydantic-ai-slim[openai]==2.37.0",
+  "pywin32>=306; platform_system == 'Windows'",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-qt>=4.4", "ruff>=0.9", "mypy>=1.8"]
+build = ["pyinstaller>=6.11"]
+mcp = ["mcp>=1.2,<2"]
+
+[project.scripts]
+solidworks-ai-assistant = "sw_assistant.__main__:main"
+solidworks-library-mcp = "sw_assistant.integration.mcp_server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+addopts = "--basetemp=.pytest_tmp"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# Keep the release gate deterministic across Ruff releases.  These are the
+# default rules used by the legacy project and catch syntax/import/name errors.
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*.py" = ["E402"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+check_untyped_defs = true

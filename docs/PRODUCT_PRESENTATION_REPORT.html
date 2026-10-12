@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>SolidWorks 智能建模助手｜产品介绍与操作指南</title>
+  <style>
+    :root {
+      --navy: #091827;
+      --navy-2: #10283f;
+      --ink: #162334;
+      --muted: #5d6c7d;
+      --line: #d9e2eb;
+      --paper: #ffffff;
+      --wash: #eef3f7;
+      --blue: #2477dc;
+      --blue-2: #e9f2fe;
+      --cyan: #29b6cf;
+      --green: #168866;
+      --green-2: #e8f7f1;
+      --amber: #b16c10;
+      --amber-2: #fff4df;
+      --red: #b64343;
+      --red-2: #fff0f0;
+      --shadow: 0 1.3cqw 4.5cqw rgba(9, 24, 39, .12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #dfe6ec;
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    .toolbar {
+      position: sticky;
+      z-index: 50;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 54px;
+      padding: 8px 22px;
+      color: #eaf4ff;
+      background: rgba(9, 24, 39, .96);
+      box-shadow: 0 8px 30px rgba(9, 24, 39, .18);
+      backdrop-filter: blur(12px);
+    }
+    .toolbar strong { font-size: 15px; }
+    .toolbar span { color: #9fb5c9; font-size: 12px; }
+    .toolbar nav { display: flex; align-items: center; gap: 8px; }
+    .toolbar a {
+      padding: 7px 11px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      color: #dbeafb;
+      font-size: 12px;
+    }
+    .toolbar a:hover, .toolbar a:focus-visible { border-color: #66b7ff; color: #fff; outline: none; }
+    .deck { display: grid; justify-items: center; gap: 34px; padding: 34px 32px 72px; }
+    .slide {
+      container-type: inline-size;
+      position: relative;
+      width: min(1600px, calc(100vw - 64px));
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+      break-after: page;
+      page-break-after: always;
+    }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .slide::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(36,119,220,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(36,119,220,.035) 1px, transparent 1px);
+      background-size: 4cqw 4cqw;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.38), transparent 72%);
+    }
+    .slide.dark { color: white; background: var(--navy); }
+    .slide.dark::before {
+      background-image:
+        linear-gradient(rgba(105,174,238,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(105,174,238,.08) 1px, transparent 1px);
+      mask-image: linear-gradient(to right, rgba(0,0,0,.75), transparent 88%);
+    }
+    .inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 4.2cqw 4.5cqw 3.7cqw;
+    }
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2cqw;
+      margin-bottom: 2.2cqw;
+    }
+    .section-label {
+      color: var(--blue);
+      font-size: 1cqw;
+      font-weight: 800;
+      letter-spacing: .13em;
+    }
+    .dark .section-label { color: #70c6ff; }
+    .chapter {
+      color: #8190a1;
+      font-size: .9cqw;
+      letter-spacing: .04em;
+    }
+    .dark .chapter { color: #86a0b7; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 1.5cqw; font-size: clamp(44px, 4.15cqw, 66px); line-height: 1.12; letter-spacing: -.025em; }
+    h2 { margin-bottom: 1.05cqw; font-size: clamp(34px, 3.1cqw, 50px); line-height: 1.15; letter-spacing: -.02em; }
+    h3 { margin-bottom: .55cqw; font-size: 1.35cqw; line-height: 1.25; }
+    p { margin-bottom: 1cqw; }
+    .lead { max-width: 62cqw; color: var(--muted); font-size: 1.35cqw; line-height: 1.65; }
+    .dark .lead { color: #b9ccdd; }
+    .body-copy { color: var(--muted); font-size: 1.18cqw; line-height: 1.7; }
+    .dark .body-copy { color: #b8cad9; }
+    .small { color: var(--muted); font-size: .95cqw; line-height: 1.6; }
+    .dark .small { color: #91a8bb; }
+    .caption { margin-top: .65cqw; color: #718295; font-size: .82cqw; line-height: 1.45; }
+    .dark .caption { color: #86a0b7; }
+    .page-no {
+      position: absolute;
+      right: 3.4cqw;
+      bottom: 2cqw;
+      display: flex;
+      align-items: center;
+      gap: .7cqw;
+      color: #728296;
+      font-size: .82cqw;
+      font-variant-numeric: tabular-nums;
+    }
+    .page-no::before { content: ""; width: 2.8cqw; height: 1px; background: currentColor; opacity: .48; }
+    .dark .page-no { color: #7790a7; }
+    .accent-rule { width: 6cqw; height: .45cqw; margin-bottom: 1.7cqw; border-radius: 999px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.3cqw; min-height: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.7cqw; min-height: 0; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.35cqw; min-height: 0; }
+    .split-40 { display: grid; grid-template-columns: .82fr 1.18fr; gap: 3.4cqw; min-height: 0; align-items: center; }
+    .split-60 { display: grid; grid-template-columns: 1.18fr .82fr; gap: 3.4cqw; min-height: 0; align-items: center; }
+    .panel {
+      padding: 1.55cqw 1.65cqw;
+      border: 1px solid var(--line);
+      border-radius: 1.05cqw;
+      background: rgba(255,255,255,.88);
+    }
+    .dark .panel { border-color: rgba(151,194,230,.2); background: rgba(17,42,64,.65); }
+    .panel.soft { border-color: transparent; background: #f2f6fa; }
+    .panel.blue { border-color: #c7dcf7; background: var(--blue-2); }
+    .panel.green { border-color: #bfe5d6; background: var(--green-2); }
+    .panel.amber { border-color: #f1d7a9; background: var(--amber-2); }
+    .panel.red { border-color: #efc3c3; background: var(--red-2); }
+    .icon-index {
+      display: grid;
+      place-items: center;
+      width: 2.65cqw;
+      height: 2.65cqw;
+      margin-bottom: 1cqw;
+      border-radius: .8cqw;
+      color: white;
+      background: var(--blue);
+      font-size: 1.25cqw;
+      font-weight: 800;
+    }
+    .dark .icon-index { color: #082039; background: #78c7ff; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .45cqw;
+      padding: .38cqw .72cqw;
+      border-radius: 999px;
+      color: #16538b;
+      background: var(--blue-2);
+      font-size: .84cqw;
+      font-weight: 700;
+    }
+    .tag::before { content: ""; width: .42cqw; height: .42cqw; border-radius: 50%; background: var(--blue); }
+    .tag.green { color: #116b50; background: var(--green-2); }
+    .tag.green::before { background: var(--green); }
+    .tag.amber { color: #88510c; background: var(--amber-2); }
+    .tag.amber::before { background: var(--amber); }
+    .tag.red { color: #973535; background: var(--red-2); }
+    .tag.red::before { background: var(--red); }
+    .list { margin: 0; padding: 0; list-style: none; }
+    .list li {
+      position: relative;
+      padding: .55cqw 0 .55cqw 1.45cqw;
+      color: var(--muted);
+      font-size: 1.05cqw;
+      line-height: 1.55;
+    }
+    .dark .list li { color: #bed0df; }
+    .list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 1.12cqw;
+      width: .5cqw;
+      height: .5cqw;
+      border: .16cqw solid var(--blue);
+      border-radius: 50%;
+    }
+    .dark .list li::before { border-color: #68c0fb; }
+    .number-list { display: grid; gap: .95cqw; margin: 0; padding: 0; list-style: none; }
+    .number-list li { display: grid; grid-template-columns: 2.7cqw 1fr; gap: 1cqw; align-items: start; }
+    .number-list b {
+      display: grid;
+      place-items: center;
+      width: 2.7cqw;
+      height: 2.7cqw;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--blue);
+      font-size: 1.05cqw;
+    }
+    .number-list strong { display: block; margin: .15cqw 0 .25cqw; font-size: 1.15cqw; }
+    .number-list span { display: block; color: var(--muted); font-size: .96cqw; line-height: 1.55; }
+    .dark .number-list span { color: #a9bfd1; }
+    .screen-frame {
+      position: relative;
+      padding: .58cqw;
+      border: 1px solid #b9c8d6;
+      border-radius: 1.15cqw;
+      background: #dce6ef;
+      box-shadow: 0 1.1cqw 3.2cqw rgba(10, 32, 51, .18);
+    }
+    .dark .screen-frame { border-color: #31506a; background: #183047; }
+    .screen-frame img { display: block; width: 100%; height: auto; border-radius: .65cqw; background: #0a1522; }
+    .screen-frame.compact img { aspect-ratio: 16 / 9; object-fit: cover; }
+    .screen-badge {
+      position: absolute;
+      right: 1.15cqw;
+      bottom: 1.1cqw;
+      padding: .42cqw .72cqw;
+      border: 1px solid rgba(255,255,255,.26);
+      border-radius: 999px;
+      color: white;
+      background: rgba(9,24,39,.82);
+      font-size: .72cqw;
+      backdrop-filter: blur(8px);
+    }
+    .hero-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: 4cqw; align-items: center; flex: 1; }
+    .hero-copy { position: relative; z-index: 2; }
+    .hero-copy .version { display: inline-block; margin-bottom: 1.7cqw; color: #7bcef9; font-size: 1cqw; font-weight: 700; letter-spacing: .12em; }
+    .hero-copy h1 { max-width: 40cqw; }
+    .hero-copy p { max-width: 35cqw; color: #b9ccdd; font-size: 1.33cqw; line-height: 1.75; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: .7cqw; margin-top: 1.7cqw; }
+    .hero-tags span { padding: .52cqw .82cqw; border: 1px solid rgba(124,201,255,.28); border-radius: 999px; color: #d4ecff; background: rgba(46,112,164,.15); font-size: .83cqw; }
+    .orb {
+      position: absolute;
+      z-index: -1;
+      right: 0;
+      top: 0;
+      width: 31cqw;
+      height: 31cqw;
+      border: 1px solid rgba(111,197,255,.16);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4cqw rgba(80,169,235,.035), 0 0 0 9cqw rgba(80,169,235,.02);
+    }
+    .quote-band {
+      display: grid;
+      grid-template-columns: .45fr 1.55fr;
+      gap: 2cqw;
+      align-items: center;
+      padding: 1.8cqw 2.1cqw;
+      border-left: .5cqw solid var(--blue);
+      background: #f2f6fa;
+    }
+    .quote-band strong { color: var(--blue); font-size: 1.05cqw; }
+    .quote-band p { margin: 0; font-size: 1.35cqw; line-height: 1.55; }
+    .metric-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.5cqw; }
+    .metric { padding-top: 1.25cqw; border-top: .28cqw solid var(--blue); }
+    .metric b { display: block; color: var(--navy-2); font-size: 2.45cqw; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .metric span { display: block; margin-top: .45cqw; color: var(--muted); font-size: .9cqw; line-height: 1.45; }
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      align-items: center;
+      gap: .7cqw;
+      margin-top: 2.1cqw;
+    }
+    .workflow .node { min-height: 7.4cqw; padding: 1cqw .75cqw; border: 1px solid #c7d5e2; border-radius: .85cqw; background: white; text-align: center; }
+    .workflow .node b { display: block; margin-bottom: .42cqw; color: var(--blue); font-size: 1.1cqw; }
+    .workflow .node span { color: var(--muted); font-size: .83cqw; line-height: 1.45; }
+    .workflow .arrow { color: #8ea2b6; text-align: center; font-size: 1.65cqw; }
+    .timeline { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.3cqw; margin-top: 2.1cqw; }
+    .timeline::before { content: ""; position: absolute; left: 2cqw; right: 2cqw; top: 1.25cqw; height: 2px; background: #c7d8e7; }
+    .timeline .step { position: relative; z-index: 1; }
+    .timeline .dot { display: grid; place-items: center; width: 2.55cqw; height: 2.55cqw; margin-bottom: .9cqw; border: .28cqw solid white; border-radius: 50%; color: white; background: var(--blue); box-shadow: 0 0 0 2px var(--blue); font-size: .9cqw; font-weight: 800; }
+    .timeline b { display: block; margin-bottom: .35cqw; font-size: 1.04cqw; }
+    .timeline p { color: var(--muted); font-size: .84cqw; line-height: 1.5; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1.1cqw;
+    }
+    .compare > div { padding: 1.8cqw 2cqw; }
+    .compare > div + div { border-left: 1px solid var(--line); }
+    .compare h3 { display: flex; align-items: center; justify-content: space-between; }
+    .compare .time { color: var(--blue); font-size: .88cqw; font-weight: 700; }
+    .hash-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 1.6cqw;
+      overflow: hidden;
+      border: 1px solid #bfd0df;
+      border-radius: 1cqw;
+      background: #f4f8fb;
+    }
+    .hash-strip div { padding: 1.15cqw 1.4cqw; }
+    .hash-strip div + div { border-left: 1px solid #bfd0df; }
+    .hash-strip b { display: block; margin-bottom: .35cqw; font-size: 1cqw; }
+    .hash-strip span { color: var(--muted); font-size: .82cqw; line-height: 1.45; }
+    .route-table { width: 100%; border-collapse: collapse; font-size: .92cqw; }
+    .route-table th, .route-table td { padding: .82cqw 1cqw; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .route-table th { color: #486074; font-size: .78cqw; letter-spacing: .08em; text-transform: uppercase; }
+    .route-table td:first-child { width: 19%; font-weight: 800; }
+    .route-table td:nth-child(2) { width: 34%; }
+    .route-table tr:last-child td { border-bottom: 0; }
+    .engineering-map { display: grid; grid-template-columns: .9fr 1.1fr; gap: 2.5cqw; align-items: stretch; }
+    .engineering-output { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.15cqw; }
+    .engineering-output .panel { min-height: 10.6cqw; }
+    .arch {
+      display: grid;
+      grid-template-columns: 1fr .23fr 1fr .23fr 1fr;
+      align-items: stretch;
+      gap: 1cqw;
+      margin-top: 1.7cqw;
+    }
+    .arch .layer { display: flex; flex-direction: column; justify-content: space-between; min-height: 22cqw; padding: 1.6cqw; border: 1px solid rgba(130,184,226,.28); border-radius: 1cqw; background: rgba(16,40,63,.78); }
+    .arch .layer b { color: #80ccff; font-size: 1.28cqw; }
+    .arch .layer p { color: #b7cbda; font-size: .9cqw; line-height: 1.55; }
+    .arch .layer ul { margin: 0; padding: 0; list-style: none; color: #d8e6f0; font-size: .84cqw; line-height: 1.8; }
+    .arch .join { display: grid; place-items: center; color: #6dbdf2; font-size: 2.2cqw; }
+    .shield {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 21cqw;
+      border: 1px solid #c7d7e4;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 48%, #fff 0 36%, #edf5fc 37% 59%, #dfeefa 60% 100%);
+      text-align: center;
+    }
+    .shield strong { max-width: 14cqw; color: var(--navy-2); font-size: 1.55cqw; line-height: 1.35; }
+    .shield span { display: block; margin-top: .6cqw; color: var(--muted); font-size: .88cqw; }
+    .proof {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.4cqw;
+      margin: 1.6cqw 0;
+    }
+    .proof div { padding: 1.55cqw; border-top: .34cqw solid var(--green); background: #f5faf8; }
+    .proof b { display: block; color: var(--green); font-size: 2.35cqw; line-height: 1; }
+    .proof span { display: block; margin-top: .55cqw; color: var(--muted); font-size: .86cqw; line-height: 1.45; }
+    .scenario-list { display: grid; gap: .75cqw; }
+    .scenario {
+      display: grid;
+      grid-template-columns: 3.4cqw 1fr 1fr;
+      gap: 1.25cqw;
+      align-items: center;
+      padding: 1cqw 1.25cqw;
+      border-bottom: 1px solid var(--line);
+    }
+    .scenario:last-child { border-bottom: 0; }
+    .scenario .code { color: var(--blue); font-size: 1.05cqw; font-weight: 800; }
+    .scenario strong { font-size: 1.05cqw; }
+    .scenario span { color: var(--muted); font-size: .9cqw; line-height: 1.45; }
+    .checklist { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.2cqw; margin-top: 1.8cqw; }
+    .checklist .item { position: relative; padding-top: 3.4cqw; }
+    .checklist .item::before { content: attr(data-step); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 2.6cqw; height: 2.6cqw; border-radius: .7cqw; color: white; background: var(--blue); font-size: 1cqw; font-weight: 800; }
+    .checklist .item::after { content: ""; position: absolute; left: 3.15cqw; right: -.6cqw; top: 1.3cqw; height: 1px; background: #bad0e2; }
+    .checklist .item:last-child::after { display: none; }
+    .checklist strong { display: block; margin-bottom: .45cqw; font-size: 1cqw; }
+    .checklist p { color: var(--muted); font-size: .82cqw; line-height: 1.5; }
+    .finish-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 4cqw; align-items: center; flex: 1; }
+    .finish-statement { color: #fff; font-size: 2.2cqw; line-height: 1.55; }
+    .finish-list { display: grid; gap: 1cqw; }
+    .finish-list div { padding: 1.3cqw 1.5cqw; border-left: .35cqw solid #65c4ff; background: rgba(32,75,108,.52); }
+    .finish-list strong { display: block; margin-bottom: .35cqw; color: #dff3ff; font-size: 1.05cqw; }
+    .finish-list span { color: #a9bfd1; font-size: .88cqw; line-height: 1.45; }
+    .print-only { display: none; }
+    @media (max-width: 900px) {
+      .toolbar nav a:not(:last-child) { display: none; }
+      .toolbar span { display: none; }
+      .deck { gap: 20px; padding: 20px 12px 42px; }
+      .slide { width: calc(100vw - 24px); }
+    }
+    @page { size: 13.333in 7.5in; margin: 0; }
+    @media print {
+      * { print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }
+      html, body { width: 13.333in; margin: 0; background: white; }
+      .toolbar { display: none; }
+      .deck { display: block; padding: 0; }
+      .slide {
+        width: 13.333in;
+        height: 7.5in;
+        aspect-ratio: auto;
+        margin: 0;
+        box-shadow: none;
+        break-inside: avoid;
+        break-after: page;
+        page-break-after: always;
+      }
+      .slide:last-child { break-after: auto; page-break-after: auto; }
+      .print-only { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar" aria-label="报告工具栏">
+    <div>
+      <strong><a href="#cover">SolidWorks 智能建模助手｜产品介绍</a></strong>
+      <span>20 页 · 16:9 横版 · 可直接打印为 PDF 后整理到 PPT</span>
+    </div>
+    <nav aria-label="快速导航">
+      <a href="#overview">功能全景</a>
+      <a href="#interface">界面介绍</a>
+      <a href="#operation">操作流程</a>
+      <a href="#proof">验证证据</a>
+      <a href="#start">快速上手</a>
+    </nav>
+  </header>
+
+  <main class="deck">
+    <section class="slide dark" id="cover" aria-labelledby="cover-title">
+      <div class="inner">
+        <div class="orb" aria-hidden="true"></div>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="version">PRODUCT BRIEF · VERSION 3.0.0</span>
+            <div class="accent-rule"></div>
+            <h1 id="cover-title">SolidWorks<br>智能建模助手</h1>
+            <p>把自然语言、模型库与 SolidWorks 官方接口连接起来，让建模过程变得可理解、可检查、可暂停、可恢复。</p>
+            <div class="hero-tags" aria-label="产品特点">
+              <span>自然语言规划</span><span>单步验证</span><span>本地模型库</span><span>工程自动化</span>
+            </div>
+          </div>
+          <figure class="screen-frame" style="margin:0">
+            <img src="product-report-assets/01-intelligent-modeling.png" alt="SolidWorks 智能建模助手当前版智能建模界面">
+            <figcaption class="screen-badge">当前版本界面 · 演示数据</figcaption>
+          </figure>
+        </div>
+        <div class="page-no">2026.08 · 产品介绍与操作指南</div>
+      </div>
+    </section>
+
+    <section class="slide" id="value" aria-labelledby="value-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">产品价值</span><span class="chapter">从“会画”到“画得稳”</span></div>
+        <h2 id="value-title">它解决的，不只是“自动画一个模型”</h2>
+        <p class="lead">CAD 自动化真正困难的地方，是选择对象会变化、操作有先后关系、失败后还要知道停在哪里。助手把这些问题放进同一条可观察的工作流。</p>
+        <div class="grid-4" style="margin-top:1.3cqw">
+          <article class="panel soft">
+            <div class="icon-index">01</div>
+            <h3>需求更容易表达</h3>
+            <p class="body-copy">用中文描述尺寸、形状和目标，不必先记住每一个 API 名称或宏命令。</p>
+          </article>
+          <article class="panel soft">
+            <div class="icon-index">02</div>
+            <h3>执行过程看得见</h3>
+            <p class="body-copy">先展示结构化计划，再逐步执行；每一步都有状态、参数和验证结果。</p>
+          </article>
+          <article class="panel soft">
+            <div class="icon-index">03</div>
+            <h3>失败不必推倒重来</h3>
+            <p class="body-copy">成功步骤保留，问题步骤暂停，可重试、改参数、人工处理或让模型重排后续。</p>
+          </article>
+          <article class="panel soft">
+            <div class="icon-index">04</div>
+            <h3>资料可以持续复用</h3>
+            <p class="body-copy">本地模型按哈希、参数、配置和引用关系建立索引，为派生与批处理提供基础。</p>
+          </article>
+        </div>
+        <div class="quote-band" style="margin-top:2cqw">
+          <strong>核心理念</strong>
+          <p>大模型负责提出计划，本地规则和 SolidWorks 实际状态负责决定“能不能做、做完没有”。</p>
+        </div>
+        <div class="page-no">02 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="overview" aria-labelledby="overview-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">功能全景</span><span class="chapter">一个入口，四个工作区</span></div>
+        <h2 id="overview-title">从建模到复用，再到工程交付</h2>
+        <p class="lead">主界面只保留日常工作所需的四个入口；模型服务、版本实验、装配与工程图等专业能力收纳在菜单中。</p>
+        <div class="grid-4" style="margin-top:1.6cqw">
+          <article class="panel blue">
+            <span class="tag">主工作区</span>
+            <h3 style="margin-top:1.1cqw">智能建模</h3>
+            <ul class="list"><li>自然语言转计划</li><li>轮廓预览和参数校验</li><li>单步或连续执行</li><li>五种失败恢复</li></ul>
+          </article>
+          <article class="panel">
+            <span class="tag green">资产工作区</span>
+            <h3 style="margin-top:1.1cqw">本地模型库</h3>
+            <ul class="list"><li>快速扫描与深度读取</li><li>参数和文件哈希</li><li>检索、健康检查、相似分析</li><li>复制、派生、产品族</li></ul>
+          </article>
+          <article class="panel">
+            <span class="tag amber">任务工作区</span>
+            <h3 style="margin-top:1.1cqw">自动化中心</h3>
+            <ul class="list"><li>批任务排队</li><li>暂停、继续和取消</li><li>程序中断后恢复</li><li>能力实验与示教回放</li></ul>
+          </article>
+          <article class="panel">
+            <span class="tag">审计工作区</span>
+            <h3 style="margin-top:1.1cqw">历史与诊断</h3>
+            <ul class="list"><li>过程日志与执行状态</li><li>模型健康和 DFM 建议</li><li>活动文档与选择上下文</li><li>问题定位证据</li></ul>
+          </article>
+        </div>
+        <div class="workflow">
+          <div class="node"><b>提出目标</b><span>自然语言或库内选择</span></div><div class="arrow">→</div>
+          <div class="node"><b>生成计划</b><span>结构化步骤与参数</span></div><div class="arrow">→</div>
+          <div class="node"><b>执行验证</b><span>SolidWorks 实际结果</span></div><div class="arrow">→</div>
+          <div class="node"><b>保存复用</b><span>模型、记录与任务证据</span></div>
+        </div>
+        <div class="page-no">03 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="interface" aria-labelledby="interface-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">界面介绍</span><span class="chapter">智能建模主界面</span></div>
+        <h2 id="interface-title">必要操作放中间，状态与证据放在右侧</h2>
+        <div class="split-60" style="flex:1;align-items:start">
+          <figure style="margin:0">
+            <div class="screen-frame compact">
+              <img src="product-report-assets/01-intelligent-modeling.png" alt="当前版智能建模主界面，包含导航、提示输入、计划步骤和上下文">
+              <span class="screen-badge">当前版本界面 · 演示数据</span>
+            </div>
+            <figcaption class="caption">截图为当前 PySide6 原生界面。主窗口采用自绘标题栏，设置与高级功能集中到顶部菜单。</figcaption>
+          </figure>
+          <ol class="number-list">
+            <li><b>1</b><div><strong>左侧工作区</strong><span>在智能建模、模型库、自动化中心、历史诊断之间切换。</span></div></li>
+            <li><b>2</b><div><strong>中部任务区</strong><span>输入目标、查看计划和轮廓预览，再决定执行下一步或全部执行。</span></div></li>
+            <li><b>3</b><div><strong>右侧实时上下文</strong><span>显示当前 SolidWorks 文档、配置、选择对象和能力状态。</span></div></li>
+            <li><b>4</b><div><strong>活动与审计</strong><span>显示正在进行的动作、成功前缀、失败原因和恢复提示。</span></div></li>
+          </ol>
+        </div>
+        <div class="page-no">04 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="operation" aria-labelledby="operation-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">操作介绍</span><span class="chapter">第一条路线：自然语言建模</span></div>
+        <h2 id="operation-title">先生成计划，再让 SolidWorks 动手</h2>
+        <p class="lead">以“新建一个直径 40 mm、高 30 mm 的圆柱零件”为例，普通用户只需要表达目标；系统负责把目标拆成受控步骤。</p>
+        <div class="timeline">
+          <article class="step"><div class="dot">1</div><b>描述目标</b><p>写清楚对象、关键尺寸和希望得到的结果。</p></article>
+          <article class="step"><div class="dot">2</div><b>生成并校验</b><p>系统检查工具是否允许、参数是否合理、先后顺序是否成立。</p></article>
+          <article class="step"><div class="dot">3</div><b>查看预览</b><p>确认草图轮廓、拉伸方向、步骤数量和说明。</p></article>
+          <article class="step"><div class="dot">4</div><b>逐步执行</b><p>建议首次使用“执行下一步”，复杂操作始终保留人工观察。</p></article>
+          <article class="step"><div class="dot">5</div><b>核对结果</b><p>系统读取模型状态；用户再决定保存、继续派生或结束任务。</p></article>
+        </div>
+        <div class="grid-3" style="margin-top:2cqw">
+          <article class="panel blue"><h3>输入建议</h3><p class="body-copy">优先写明确尺寸和基准，例如“前视基准面”“盲孔深度 12 mm”。</p></article>
+          <article class="panel green"><h3>确认重点</h3><p class="body-copy">关注选择对象、尺寸单位、凸台/切除方向和预期实体数量。</p></article>
+          <article class="panel amber"><h3>复杂任务</h3><p class="body-copy">拆成多个可验证阶段，比一次性生成很长的命令序列更可靠。</p></article>
+        </div>
+        <div class="page-no">05 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="verification" aria-labelledby="verification-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">交互式执行</span><span class="chapter">每一步都建立新证据</span></div>
+        <h2 id="verification-title">不是“发完命令就相信成功”，而是执行后重新检查</h2>
+        <p class="lead">SolidWorks 操作依赖前序特征、选中对象和模型拓扑。系统通过前后快照与后验条件，确认当前步骤是否真的改变了模型。</p>
+        <div class="workflow" style="grid-template-columns:repeat(9,minmax(0,1fr));margin-top:1.6cqw">
+          <div class="node"><b>读取现场</b><span>文档、配置、选择</span></div><div class="arrow">→</div>
+          <div class="node"><b>执行一步</b><span>调用白名单工具</span></div><div class="arrow">→</div>
+          <div class="node"><b>重新读取</b><span>刷新模型快照</span></div><div class="arrow">→</div>
+          <div class="node"><b>检查结果</b><span>实体、特征、尺寸</span></div><div class="arrow">→</div>
+          <div class="node"><b>继续 / 暂停</b><span>由证据决定</span></div>
+        </div>
+        <div class="grid-3" style="margin-top:2cqw">
+          <article class="panel">
+            <span class="tag">选择更稳定</span>
+            <h3 style="margin-top:1cqw">命名目标与持久引用</h3>
+            <p class="body-copy">把“刚才选中的面”转成可恢复的目标引用，拓扑变化后如果失效会明确提示，不盲猜。</p>
+          </article>
+          <article class="panel">
+            <span class="tag green">状态更可信</span>
+            <h3 style="margin-top:1cqw">新鲜快照</h3>
+            <p class="body-copy">每步前后都从 SolidWorks 读取当前状态，避免使用已经过期的选择或缓存。</p>
+          </article>
+          <article class="panel">
+            <span class="tag amber">操作可控</span>
+            <h3 style="margin-top:1cqw">统一停止</h3>
+            <p class="body-copy">停止会阻止后续步骤并终止助手工作进程；已被 SolidWorks 接收的原子调用仍需事后核对。</p>
+          </article>
+        </div>
+        <div class="quote-band" style="margin-top:1.8cqw"><strong>适合的节奏</strong><p>简单重复任务可以连续执行；新模型、复杂装配或不熟悉的特征，建议保持“执行一步—检查一步”。</p></div>
+        <div class="page-no">06 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="recovery" aria-labelledby="recovery-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">失败恢复</span><span class="chapter">停在问题处，不丢失成功前缀</span></div>
+        <h2 id="recovery-title">遇到问题时，用户仍然掌握下一步</h2>
+        <div class="split-60" style="flex:1;align-items:start">
+          <figure style="margin:0">
+            <div class="screen-frame compact">
+              <img src="product-report-assets/04-recovery-options.png" alt="执行失败后的恢复操作界面">
+              <span class="screen-badge">当前版本界面 · 演示失败</span>
+            </div>
+            <figcaption class="caption">示例：绘制圆后未检测到草图实体增加。系统暂停，前三步成功结果仍保留。</figcaption>
+          </figure>
+          <div>
+            <ol class="number-list">
+              <li><b>1</b><div><strong>调整环境后重试</strong><span>修正 SolidWorks 当前选择、活动文档或草图状态。</span></div></li>
+              <li><b>2</b><div><strong>编辑参数并重试</strong><span>修改尺寸、方向、目标面等当前步骤参数。</span></div></li>
+              <li><b>3</b><div><strong>人工完成后验证</strong><span>用户在 SolidWorks 中完成操作，系统重新检查结果。</span></div></li>
+              <li><b>4</b><div><strong>让模型修复后续计划</strong><span>保留成功步骤，把失败信息交给规划器重新安排后续。</span></div></li>
+              <li><b>5</b><div><strong>跳过</strong><span>仅在明确知道该步骤不影响后续时使用，并保留审计记录。</span></div></li>
+            </ol>
+          </div>
+        </div>
+        <div class="page-no">07 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="library-ui" aria-labelledby="library-ui-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">界面介绍</span><span class="chapter">本地模型库</span></div>
+        <h2 id="library-ui-title">把分散在文件夹里的模型，变成可查询的本地资产</h2>
+        <div class="split-60" style="flex:1;align-items:start">
+          <figure style="margin:0">
+            <div class="screen-frame compact">
+              <img src="product-report-assets/02-local-model-library.png" alt="当前版本地模型库界面，包含扫描、进度、模型列表和参数详情">
+              <span class="screen-badge">当前版本界面 · 演示数据</span>
+            </div>
+            <figcaption class="caption">列表显示类型、参数状态、哈希、大小和路径；下方展示配置、材料、特征、尺寸与引用等参数快照。</figcaption>
+          </figure>
+          <div>
+            <ol class="number-list">
+              <li><b>1</b><div><strong>选择目录</strong><span>指定需要纳入管理的零件、装配体和工程图目录。</span></div></li>
+              <li><b>2</b><div><strong>选择扫描方式</strong><span>快速扫描不启动 SolidWorks；深度读取会提取完整参数。</span></div></li>
+              <li><b>3</b><div><strong>查看进度</strong><span>总量、成功、跳过、失败、耗时和停止按钮持续可见。</span></div></li>
+              <li><b>4</b><div><strong>检索与复用</strong><span>按名称、路径和语义查找，再执行复制、参数派生或产品族生成。</span></div></li>
+            </ol>
+          </div>
+        </div>
+        <div class="page-no">08 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="library-operation" aria-labelledby="library-operation-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">操作介绍</span><span class="chapter">第二条路线：模型库扫描</span></div>
+        <h2 id="library-operation-title">先快后深：大目录也能逐步建立参数库</h2>
+        <p class="lead">扫描分成两层，避免为了列出文件就启动 SolidWorks。只有需要特征、尺寸、配置或引用关系时，才进入深度读取。</p>
+        <div class="compare" style="margin-top:1.4cqw">
+          <div>
+            <h3>快速扫描 <span class="time">无需启动 SolidWorks</span></h3>
+            <ul class="list"><li>发现 SLDPRT、SLDASM、SLDDRW</li><li>记录路径、类型、大小和修改时间</li><li>生成快速指纹，识别未变化文件</li><li>适合第一次建立索引或日常增量刷新</li></ul>
+          </div>
+          <div>
+            <h3>深度读取 <span class="time">需要 COM 或合法 DM 许可</span></h3>
+            <ul class="list"><li>读取配置、属性、材料、特征和尺寸</li><li>读取装配引用、工程图视图和几何摘要</li><li>生成完整文件哈希与参数 Manifest</li><li>支持取消；失败文件单独记录，不阻塞全目录</li></ul>
+          </div>
+        </div>
+        <div class="hash-strip">
+          <div><b>快速指纹</b><span>用于判断“这个文件是否可能变化”，减少重复深读。</span></div>
+          <div><b>文件 SHA-256</b><span>像文件的数字指纹，用于确认源文件是否保持不变。</span></div>
+          <div><b>参数 Manifest 哈希</b><span>确认配置、尺寸、材料等结构化参数快照是否变化。</span></div>
+        </div>
+        <div class="panel amber" style="margin-top:1.4cqw;padding:1.1cqw 1.45cqw">
+          <p class="body-copy" style="margin:0"><strong>什么时候必须打开 SolidWorks？</strong> 快速扫描不需要；当前深度读取通常由独立 SolidWorks COM 工作进程完成。配置合法的 Document Manager 许可证后，可在部分元数据场景减少界面启动，但不能替代全部几何和特征验证。</p>
+        </div>
+        <div class="page-no">09 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="reuse" aria-labelledby="reuse-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">模型复用</span><span class="chapter">复制、派生、重建各有边界</span></div>
+        <h2 id="reuse-title">根据目标选择正确的复用方式</h2>
+        <p class="lead">系统不会把所有文件都当成同一种“复制”。零件、装配体、工程图的引用关系不同，安全路线也不同。</p>
+        <div class="panel" style="padding:.6cqw 1.2cqw;margin-top:1.2cqw">
+          <table class="route-table" aria-label="模型复用方式对比">
+            <thead><tr><th>方式</th><th>适合场景</th><th>系统如何保护结果</th><th>当前状态</th></tr></thead>
+            <tbody>
+              <tr><td>原样复制零件</td><td>保留结构与参数，生成独立文件</td><td>不覆盖目标；复制前后核对哈希</td><td><span class="tag green">已实现</span></td></tr>
+              <tr><td>参数派生零件</td><td>修改指定尺寸或属性，形成新规格</td><td>先复制到临时区，只改副本；重建、保存、重开再发布</td><td><span class="tag green">已实现</span></td></tr>
+              <tr><td>产品族</td><td>同一设计生成多个配置和规格组合</td><td>以配置矩阵驱动，稳定尺寸身份和属性映射</td><td><span class="tag green">已实现</span></td></tr>
+              <tr><td>Pack and Go</td><td>装配体连同所有引用一起发布</td><td>调用 SolidWorks 官方 API，临时目录验证后原子发布</td><td><span class="tag green">已实现</span></td></tr>
+              <tr><td>安全格式导出</td><td>STEP、STL、IGES、PDF、DXF、DWG 等交付</td><td>格式白名单、不覆盖、检查非空输出和哈希</td><td><span class="tag green">已实现</span></td></tr>
+              <tr><td>复杂零件重绘</td><td>需要理解圆角、曲面、放样、孔向导等完整设计意图</td><td>当前仅开放基础草图、拉伸和旋转；不支持时明确拒绝</td><td><span class="tag amber">受限</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="quote-band" style="margin-top:1.4cqw"><strong>最重要的规则</strong><p>源文件默认保持不变；装配体不做普通文件复制，必须使用 Pack and Go 保留引用完整性。</p></div>
+        <div class="page-no">10 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="engineering" aria-labelledby="engineering-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">工程自动化</span><span class="chapter">从三维模型走向可交付成果</span></div>
+        <h2 id="engineering-title">装配、工程图、制造检查形成连续工作流</h2>
+        <div class="engineering-map" style="margin-top:1.1cqw;flex:1">
+          <div class="panel blue" style="display:flex;flex-direction:column;justify-content:center">
+            <span class="tag">输入</span>
+            <h3 style="margin-top:1cqw">经过验证的模型与引用</h3>
+            <ul class="list"><li>零件和配置参数</li><li>装配组件与缺失引用</li><li>持久引用的面、边与基准</li><li>本地模型库中的参数证据</li></ul>
+            <p class="small" style="margin-top:1cqw">高级功能从顶部“工程自动化”菜单进入，主界面保持简洁。</p>
+          </div>
+          <div class="engineering-output">
+            <article class="panel"><span class="tag green">装配体助手</span><h3 style="margin-top:.8cqw">检查与配合</h3><p class="body-copy">读取组件、固定状态、缺件和干涉；使用持久引用创建受控配合。</p></article>
+            <article class="panel"><span class="tag green">工程图</span><h3 style="margin-top:.8cqw">视图与标注</h3><p class="body-copy">主视、俯视、右视、等轴测、剖视、BOM、自动气泡和模型尺寸导入。</p></article>
+            <article class="panel"><span class="tag amber">制造分析</span><h3 style="margin-top:.8cqw">PMI 与 DFM</h3><p class="body-copy">许可证和版本允许时读取 PMI；同时执行本地可解释 DFM 规则。</p></article>
+            <article class="panel"><span class="tag">交付输出</span><h3 style="margin-top:.8cqw">格式导出</h3><p class="body-copy">工程图 PDF/DWG 与模型交换格式导出，结果必须非空并留下哈希。</p></article>
+          </div>
+        </div>
+        <div class="page-no">11 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="automation-ui" aria-labelledby="automation-ui-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">界面介绍</span><span class="chapter">自动化中心</span></div>
+        <h2 id="automation-ui-title">长任务可以排队，也可以中途暂停和继续</h2>
+        <div class="split-60" style="flex:1;align-items:start">
+          <figure style="margin:0">
+            <div class="screen-frame compact">
+              <img src="product-report-assets/03-automation-center.png" alt="当前版自动化中心界面，显示任务状态、进度和控制按钮">
+              <span class="screen-badge">当前版本界面 · 演示数据</span>
+            </div>
+            <figcaption class="caption">任务记录保存在本地数据库。程序中断后，可回收未完成任务并从已确认位置继续。</figcaption>
+          </figure>
+          <div>
+            <ol class="number-list">
+              <li><b>1</b><div><strong>运行排队任务</strong><span>把模型健康检查、语义索引等重复工作交给持久任务队列。</span></div></li>
+              <li><b>2</b><div><strong>暂停与继续</strong><span>需要人工检查或临时让出 SolidWorks 时，可以暂停后再恢复。</span></div></li>
+              <li><b>3</b><div><strong>取消与恢复</strong><span>取消阻止后续任务项；异常中断通过租约与心跳机制识别。</span></div></li>
+              <li><b>4</b><div><strong>能力实验</strong><span>在目标 SolidWorks 版本上逐项探测功能，保存版本和证据。</span></div></li>
+            </ol>
+          </div>
+        </div>
+        <div class="page-no">12 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="learning" aria-labelledby="learning-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">人机协同</span><span class="chapter">把人工经验变成可审阅的操作配方</span></div>
+        <h2 id="learning-title">系统可以学习“怎么做”，但不会未经确认自动回放</h2>
+        <p class="lead">人工示教用于捕获步骤和上下文，生成的是候选配方。它必须经过审阅和批准，默认只提供逐步引导。</p>
+        <div class="workflow" style="margin-top:1.7cqw">
+          <div class="node"><b>开始示教</b><span>记录活动文档与动作</span></div><div class="arrow">→</div>
+          <div class="node"><b>结束示教</b><span>整理候选步骤</span></div><div class="arrow">→</div>
+          <div class="node"><b>人工审阅</b><span>删除噪声、补充说明</span></div><div class="arrow">→</div>
+          <div class="node"><b>批准配方</b><span>明确适用条件</span></div>
+        </div>
+        <div class="grid-3" style="margin-top:2cqw">
+          <article class="panel blue"><h3>记录什么</h3><p class="body-copy">文档变化、选择上下文、关键操作以及可恢复的对象引用。</p></article>
+          <article class="panel green"><h3>如何使用</h3><p class="body-copy">以步骤清单提示用户在 SolidWorks 中操作，并在每个阶段检查条件。</p></article>
+          <article class="panel red"><h3>不会做什么</h3><p class="body-copy">不会把所有界面点击直接转换成未经审查的写操作，也不会绕过工具白名单。</p></article>
+        </div>
+        <div class="quote-band" style="margin-top:1.8cqw"><strong>适合沉淀</strong><p>企业标准操作、固定检查流程、重复准备动作，以及“机器不稳定时如何人工接管”的经验。</p></div>
+        <div class="page-no">13 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide dark" id="architecture" aria-labelledby="architecture-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">系统架构</span><span class="chapter">桌面助手 + 独立工作进程 + SolidWorks 内嵌入口</span></div>
+        <h2 id="architecture-title">让智能、执行和现场状态各司其职</h2>
+        <p class="lead">系统不让大模型直接控制 SolidWorks。模型输出计划，本地运行时校验计划，独立 COM 工作进程串行执行，C# Add-in 只读采集实时上下文。</p>
+        <div class="arch">
+          <article class="layer">
+            <div><b>桌面助手</b><p>面向用户的计划、模型库、任务和诊断界面。</p></div>
+            <ul><li>自然语言规划</li><li>工具白名单与参数校验</li><li>恢复决策与人工确认</li><li>本地数据库和审计</li></ul>
+          </article>
+          <div class="join">⇄</div>
+          <article class="layer">
+            <div><b>Python STA 工作进程</b><p>所有 SolidWorks 写操作在单线程 COM 环境中按顺序执行。</p></div>
+            <ul><li>一步一调用</li><li>前后快照</li><li>超时与取消</li><li>临时工作区和结果验证</li></ul>
+          </article>
+          <div class="join">⇄</div>
+          <article class="layer">
+            <div><b>SolidWorks + C# Add-in</b><p>官方 API 完成建模；Task Pane 提供应用内入口和只读现场信息。</p></div>
+            <ul><li>活动文档与配置</li><li>选择事件与持久引用</li><li>版本能力探测</li><li>官方 Pack and Go / 工程图接口</li></ul>
+          </article>
+        </div>
+        <div class="caption">STA：适合 COM 自动化的单线程执行模式。Task Pane：显示在 SolidWorks 内部侧栏中的助手入口。</div>
+        <div class="page-no">14 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="technology" aria-labelledby="technology-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">技术亮点</span><span class="chapter">用工程约束提升可靠性</span></div>
+        <h2 id="technology-title">六项设计，让 AI 辅助更接近工程软件</h2>
+        <div class="grid-3" style="margin-top:1.3cqw">
+          <article class="panel"><div class="icon-index">1</div><h3>结构化计划</h3><p class="body-copy">模型只能选择已登记工具并提交明确参数，不能随意执行命令字符串。</p></article>
+          <article class="panel"><div class="icon-index">2</div><h3>后验验证</h3><p class="body-copy">执行后读取实体、特征、尺寸和文档状态，用结果判断成功。</p></article>
+          <article class="panel"><div class="icon-index">3</div><h3>COM 进程隔离</h3><p class="body-copy">SolidWorks 调用在独立进程中串行执行，停止和故障不会锁死整个界面。</p></article>
+          <article class="panel"><div class="icon-index">4</div><h3>持久引用</h3><p class="body-copy">对关键面、边和基准保存可恢复引用；失效时显式报错，不猜测替代对象。</p></article>
+          <article class="panel"><div class="icon-index">5</div><h3>幂等任务</h3><p class="body-copy">批处理为每个任务项保留唯一键、租约和心跳，减少重复执行。</p></article>
+          <article class="panel"><div class="icon-index">6</div><h3>证据化发布</h3><p class="body-copy">复制、派生、导出先在临时区完成，检查文件、哈希和重开结果后再发布。</p></article>
+        </div>
+        <div class="quote-band" style="margin-top:1.7cqw"><strong>简单理解</strong><p>AI 像“提出步骤的工程助理”，本地规则像“工艺审核员”，SolidWorks 的实际结果才是最终验收依据。</p></div>
+        <div class="page-no">15 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="safety" aria-labelledby="safety-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">安全与隐私</span><span class="chapter">本地优先，写操作受控</span></div>
+        <h2 id="safety-title">保护源文件，也保护操作决定权</h2>
+        <div class="split-40" style="flex:1">
+          <div class="shield">
+            <div><strong>本地数据与工程文件<br>保持在用户控制范围内</strong><span>凭据、哈希、审计、临时发布共同防护</span></div>
+          </div>
+          <div class="grid-2">
+            <article class="panel blue"><h3>凭据保护</h3><p class="body-copy">模型服务 API Key 使用 Windows DPAPI 按当前用户加密；日志不记录明文密钥。</p></article>
+            <article class="panel green"><h3>源文件保护</h3><p class="body-copy">派生修改副本，装配使用 Pack and Go；目标已存在时默认拒绝覆盖。</p></article>
+            <article class="panel"><h3>人工控制</h3><p class="body-copy">高风险动作保留确认和单步入口；失败后由用户选择恢复路线。</p></article>
+            <article class="panel amber"><h3>能力门控</h3><p class="body-copy">没有许可证、COM 组件或版本证据时显示不可用，不伪装成已成功。</p></article>
+            <article class="panel"><h3>可审计记录</h3><p class="body-copy">计划、任务、结果和恢复决策写入本地记录，方便定位问题。</p></article>
+            <article class="panel red"><h3>明确边界</h3><p class="body-copy">系统不是 PDM，也不是无人监管的通用宏执行器；复杂未知特征不会盲目生成。</p></article>
+          </div>
+        </div>
+        <div class="page-no">16 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="proof" aria-labelledby="proof-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">验证证据</span><span class="chapter">事实与边界同时展示</span></div>
+        <h2 id="proof-title">当前版本已经验证到什么程度</h2>
+        <p class="lead">以下数字来自 2026-08-10 的项目验证报告，不是预测值。报告区分“自动化通过”“实机通过”和“外部条件未具备”。</p>
+        <div class="proof">
+          <div><b>159</b><span>Python 自动化测试全部通过</span></div>
+          <div><b>54</b><span>个 Python 源码文件通过静态类型检查</span></div>
+          <div><b>7 / 7</b><span>C# Event Bridge 自包含测试通过</span></div>
+          <div><b>25 / 25</b><span>SolidWorks 2025 SP5.0 API 能力探测可用</span></div>
+        </div>
+        <div class="grid-2">
+          <article class="panel green">
+            <h3>已完成实机回归</h3>
+            <ul class="list"><li>基础建模与产品族配置写入、重开验证</li><li>装配体检查、持久引用配合、源哈希不变</li><li>三视图、剖视图、BOM、气泡、PDF/DWG 导出</li><li>C# Add-in 自动加载、Task Pane 和实时上下文</li></ul>
+          </article>
+          <article class="panel amber">
+            <h3>仍需目标环境验证</h3>
+            <ul class="list"><li>当前只实测 SolidWorks 2025 SP5.0，2024/2026 未安装</li><li>本机没有 PDM Professional COM，仅读取边界已实现</li><li>PMI API 路线可调用，但当前实机夹具不含 PMI 数据</li><li>安装程序未配置商业 Authenticode 签名证书</li></ul>
+          </article>
+        </div>
+        <div class="page-no">17 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="scenarios" aria-labelledby="scenarios-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">应用场景</span><span class="chapter">从个人提效到团队资产沉淀</span></div>
+        <h2 id="scenarios-title">哪些工作最适合先交给助手</h2>
+        <p class="lead">优先选择规则清楚、结果可检查、重复频率高的场景；复杂创新设计仍以工程师判断为主。</p>
+        <div class="panel" style="padding:.8cqw 1.2cqw;margin-top:1.1cqw">
+          <div class="scenario-list">
+            <div class="scenario"><span class="code">A01</span><strong>基础零件与标准结构快速建模</strong><span>明确草图、尺寸、拉伸或旋转目标，适合单步验证。</span></div>
+            <div class="scenario"><span class="code">A02</span><strong>同类零件参数化派生</strong><span>从可靠源模型生成不同规格，保留源文件并验证新文件。</span></div>
+            <div class="scenario"><span class="code">A03</span><strong>本地模型盘点与查找</strong><span>快速建立索引，再按需提取参数、引用和健康信息。</span></div>
+            <div class="scenario"><span class="code">A04</span><strong>装配检查和工程图准备</strong><span>识别缺件与干涉，生成标准视图、BOM、气泡和交付格式。</span></div>
+            <div class="scenario"><span class="code">A05</span><strong>批量质量检查与索引维护</strong><span>将重复任务排队运行，中途暂停，程序恢复后继续。</span></div>
+            <div class="scenario"><span class="code">A06</span><strong>标准作业引导和经验沉淀</strong><span>记录人工操作，审阅后作为配方逐步引导新用户。</span></div>
+          </div>
+        </div>
+        <div class="quote-band" style="margin-top:1.5cqw"><strong>选型原则</strong><p>任务越能清楚描述“输入、步骤、预期结果”，越适合自动化；越依赖隐含设计意图，越需要人工主导。</p></div>
+        <div class="page-no">18 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide" id="start" aria-labelledby="start-title">
+      <div class="inner">
+        <div class="topline"><span class="section-label">快速上手</span><span class="chapter">第一次使用建议路线</span></div>
+        <h2 id="start-title">五步完成安装、连接和第一次任务</h2>
+        <div class="checklist">
+          <article class="item" data-step="1"><strong>安装程序</strong><p>在 Windows 电脑安装桌面端；如需 SolidWorks 内嵌入口，再注册 C# Add-in。</p></article>
+          <article class="item" data-step="2"><strong>配置模型服务</strong><p>在设置中选择服务商、地址、模型和 API Key；凭据按当前 Windows 用户加密。</p></article>
+          <article class="item" data-step="3"><strong>确认 SolidWorks</strong><p>启动受支持版本，检查右侧实时上下文是否显示活动文档和能力状态。</p></article>
+          <article class="item" data-step="4"><strong>建立本地索引</strong><p>先做快速扫描；选择少量代表文件进行深度读取，确认参数结果。</p></article>
+          <article class="item" data-step="5"><strong>从单步开始</strong><p>输入简单任务，检查计划和预览，逐步执行并观察 SolidWorks 模型变化。</p></article>
+        </div>
+        <div class="grid-3" style="margin-top:2.2cqw">
+          <article class="panel blue"><h3>基础环境</h3><p class="body-copy">Windows 10/11、SolidWorks、可用模型服务；开发环境要求 Python 3.11+。</p></article>
+          <article class="panel green"><h3>首次验收</h3><p class="body-copy">建议使用副本或专用夹具，核对停止、恢复、重开验证和目标目录保护。</p></article>
+          <article class="panel amber"><h3>迁移到新电脑</h3><p class="body-copy">重新输入 API Key；DPAPI 加密内容不能直接跨 Windows 用户解密。模型库可重新扫描建立。</p></article>
+        </div>
+        <div class="panel soft" style="margin-top:1.5cqw;padding:1cqw 1.4cqw">
+          <p class="body-copy" style="margin:0"><strong>推荐试运行：</strong>先完成“快速扫描一个测试目录”和“逐步生成一个简单圆柱”两条路线，再启用产品族、装配体、工程图和批处理。</p>
+        </div>
+        <div class="page-no">19 / 20</div>
+      </div>
+    </section>
+
+    <section class="slide dark" id="finish" aria-labelledby="finish-title">
+      <div class="inner">
+        <div class="orb" aria-hidden="true"></div>
+        <div class="topline"><span class="section-label">总结</span><span class="chapter">让自动化保持可理解、可验证、可接管</span></div>
+        <div class="finish-grid">
+          <div>
+            <div class="accent-rule"></div>
+            <h2 id="finish-title">智能建模的价值，来自完整工作流</h2>
+            <p class="finish-statement">从一句自然语言，到可审阅计划、单步执行、结果验证、失败恢复，再到模型资产持续复用。</p>
+          </div>
+          <div class="finish-list">
+            <div><strong>对普通用户</strong><span>降低表达和重复操作门槛，始终能看到系统正在做什么。</span></div>
+            <div><strong>对工程师</strong><span>保留参数、选择、结果和失败证据，减少黑盒式自动化。</span></div>
+            <div><strong>对团队</strong><span>把模型、参数、标准操作和批任务沉淀为可持续管理的本地资产。</span></div>
+            <div><strong>对管理者</strong><span>以明确验证范围和技术边界评估落地，不用模糊的“全自动”承诺。</span></div>
+          </div>
+        </div>
+        <p class="caption">本报告基于 v3.0.0 当前源码、界面与 2026-08-10 验证记录整理。界面截图使用隐私安全的演示数据。</p>
+        <div class="page-no">20 / 20</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

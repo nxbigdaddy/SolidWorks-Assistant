@@ -1,0 +1,25 @@
+{
+  "test": "real SolidWorks owned circle repair",
+  "source": "artifacts/v511-live-circle-repair/20260907-004827-e0fbf7a5/result.json",
+  "status": "passed",
+  "duration_seconds": 375.47,
+  "external_model_requests": 0,
+  "existing_cad_files_opened": 0,
+  "cad_files_saved": 0,
+  "fixture": "64 x 32 x 4 mm base; three radius-8 circles at x=-16,0,16 mm",
+  "expected_failure": "touching profiles; status 12",
+  "repair": "only middle circle: radius 8 -> 7.5 mm; other geometry unchanged",
+  "retry": "8 mm merged boss extrusion",
+  "checks": {
+    "three_circle_creation_identities_verified": true,
+    "failed_extrusion_preserved_geometry": true,
+    "radius_readback_verified": true,
+    "one_solid": true,
+    "no_active_sketch": true,
+    "no_feature_errors": true,
+    "volume": true,
+    "unsaved": true
+  },
+  "actual_volume_mm3": 10507.353785695681,
+  "expected_volume_mm3": 10507.353785695677
+}

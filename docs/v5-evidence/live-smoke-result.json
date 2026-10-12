@@ -1,0 +1,76 @@
+{
+  "status": "completed",
+  "message": "最终模型已通过锁定目标和模型健康检查。",
+  "rounds": 3,
+  "completed_steps": 6,
+  "verification": {
+    "checked_at": "2026-09-06T12:12:29.135328+00:00",
+    "goals": [
+      {
+        "id": "part",
+        "description": "零件文档",
+        "metric": "document_type",
+        "target": "",
+        "expected": "part",
+        "actual": "part",
+        "operator": "eq",
+        "tolerance": 0.001,
+        "observable": true,
+        "passed": true
+      },
+      {
+        "id": "body",
+        "description": "一个实体",
+        "metric": "body_count",
+        "target": "",
+        "expected": 1.0,
+        "actual": 1,
+        "operator": "eq",
+        "tolerance": 0.001,
+        "observable": true,
+        "passed": true
+      },
+      {
+        "id": "volume",
+        "description": "10 mm 立方体体积",
+        "metric": "volume_mm3",
+        "target": "",
+        "expected": 1000.0,
+        "actual": 1000.0000000000001,
+        "operator": "eq",
+        "tolerance": 0.001,
+        "observable": true,
+        "passed": true
+      }
+    ],
+    "implicit": [
+      {
+        "id": "task_created_document",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "no_active_sketch",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "no_feature_errors",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "part_has_body",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "connected_document",
+        "passed": true,
+        "observable": true
+      }
+    ],
+    "passed": true
+  },
+  "external_model_requests": 0
+}

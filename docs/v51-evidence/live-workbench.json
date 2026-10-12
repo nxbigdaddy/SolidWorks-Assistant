@@ -1,0 +1,87 @@
+{
+  "status": "completed",
+  "message": "最终模型已通过锁定目标和模型健康检查。",
+  "duration_seconds": 143.95,
+  "rounds": 4,
+  "completed_steps": 5,
+  "verification": {
+    "checked_at": "2026-09-06T14:36:46.218760+00:00",
+    "goals": [
+      {
+        "id": "volume",
+        "description": "20 × 10 × 10 mm 棱柱体积",
+        "metric": "volume_mm3",
+        "target": "",
+        "expected": 2000.0,
+        "actual": 2000.0000000000002,
+        "operator": "eq",
+        "tolerance": 0.001,
+        "observable": true,
+        "passed": true,
+        "geometry_evidence": true,
+        "feature_type": null
+      }
+    ],
+    "implicit": [
+      {
+        "id": "requirements_have_geometry_evidence",
+        "passed": true,
+        "observable": true,
+        "issues": []
+      },
+      {
+        "id": "task_created_document",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "no_active_sketch",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "no_feature_errors",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "part_has_body",
+        "passed": true,
+        "observable": true
+      },
+      {
+        "id": "connected_document",
+        "passed": true,
+        "observable": true
+      }
+    ],
+    "requirements": [
+      {
+        "id": "r1",
+        "description": "新建一个 20 × 10 × 10 mm 的未保存矩形棱柱。",
+        "source_message_id": "initial",
+        "source_text": "新建一个 20 × 10 × 10 mm 的未保存矩形棱柱。",
+        "parent_id": "",
+        "goal_ids": [
+          "volume"
+        ]
+      }
+    ],
+    "passed": true
+  },
+  "diagnostic_tools": [
+    "session.capabilities",
+    "diagnostics.recent",
+    "session.capabilities",
+    "model.references"
+  ],
+  "diagnostic_success": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "local_model_requests": 6,
+  "external_model_requests": 0,
+  "decision_rejections": 1
+}

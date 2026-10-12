@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>SolidWorks 智能建模助手 v3.0.0｜系统功能报告</title>
+  <style>
+    :root {
+      --ink: #17212f;
+      --muted: #5c6979;
+      --line: #d9e1e8;
+      --paper: #ffffff;
+      --wash: #f3f6f9;
+      --nav: #111d2a;
+      --blue: #1769aa;
+      --blue-2: #e9f3fb;
+      --green: #18794e;
+      --green-bg: #e9f8f0;
+      --amber: #9a6700;
+      --amber-bg: #fff5d6;
+      --red: #b42318;
+      --red-bg: #fff0ef;
+      --violet: #6842a0;
+      --violet-bg: #f3edff;
+      --shadow: 0 8px 28px rgba(24, 38, 53, .08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--wash);
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      line-height: 1.72;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, pre { font-family: Consolas, "Cascadia Mono", monospace; }
+    code { color: #163f68; background: #edf3f8; border-radius: 4px; padding: .08rem .32rem; overflow-wrap: anywhere; }
+    .layout { display: grid; grid-template-columns: 285px minmax(0, 1fr); min-height: 100vh; }
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      padding: 26px 20px;
+      color: #dce6f0;
+      background: var(--nav);
+    }
+    .brand { padding: 0 8px 20px; border-bottom: 1px solid rgba(255,255,255,.12); }
+    .brand-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      margin-bottom: 12px;
+      border-radius: 11px;
+      color: white;
+      background: linear-gradient(135deg, #3197dd, #1769aa);
+      font-weight: 800;
+    }
+    .brand strong { display: block; color: white; font-size: 16px; line-height: 1.35; }
+    .brand small { color: #9fb1c3; }
+    nav { padding: 16px 0 40px; }
+    nav a {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 7px;
+      color: #bdcbd8;
+      font-size: 13px;
+    }
+    nav a:hover { color: white; background: rgba(255,255,255,.08); text-decoration: none; }
+    nav .group { margin: 17px 10px 5px; color: #6f879c; font-size: 11px; letter-spacing: .12em; }
+    main { width: min(1480px, 100%); min-width: 0; padding: 28px 34px 70px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 54px 58px;
+      border-radius: 20px;
+      color: white;
+      background: linear-gradient(128deg, #102438 0%, #164f77 62%, #147f99 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -110px;
+      top: -140px;
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 50%;
+      box-shadow: 0 0 0 55px rgba(255,255,255,.035), 0 0 0 120px rgba(255,255,255,.025);
+    }
+    .eyebrow { margin: 0 0 12px; color: #a9def3; font-size: 13px; font-weight: 700; letter-spacing: .16em; }
+    h1 { position: relative; z-index: 1; margin: 0; max-width: 960px; font-size: clamp(34px, 4.2vw, 58px); line-height: 1.18; }
+    .hero p { position: relative; z-index: 1; max-width: 920px; margin: 22px 0 0; color: #d5e9f5; font-size: 17px; }
+    .hero-meta { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .hero-meta span { padding: 7px 12px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.08); font-size: 12px; }
+    section {
+      margin-top: 24px;
+      padding: 34px 38px;
+      border: 1px solid #e2e8ee;
+      border-radius: 16px;
+      background: var(--paper);
+      box-shadow: 0 3px 16px rgba(24, 38, 53, .045);
+      scroll-margin-top: 20px;
+    }
+    h2 { margin: 0 0 9px; color: #132c42; font-size: 27px; line-height: 1.35; }
+    h3 { margin: 30px 0 10px; color: #193a55; font-size: 20px; }
+    h4 { margin: 20px 0 8px; font-size: 16px; }
+    .lead { margin-top: 0; color: var(--muted); font-size: 16px; }
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card { min-width: 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfd; overflow-wrap: anywhere; }
+    .card h3, .card h4 { margin-top: 0; }
+    .metric { border-top: 3px solid var(--blue); }
+    .metric b { display: block; color: #103d60; font-size: 28px; line-height: 1.2; }
+    .metric span { color: var(--muted); font-size: 12px; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .done { color: var(--green); background: var(--green-bg); }
+    .conditional { color: var(--amber); background: var(--amber-bg); }
+    .closed { color: var(--red); background: var(--red-bg); }
+    .info { color: var(--violet); background: var(--violet-bg); }
+    .callout { margin: 18px 0; padding: 15px 18px; border-left: 4px solid var(--blue); border-radius: 8px; background: var(--blue-2); }
+    .callout.warning { border-color: #d19500; background: var(--amber-bg); }
+    .callout.danger { border-color: var(--red); background: var(--red-bg); }
+    .callout.success { border-color: var(--green); background: var(--green-bg); }
+    table { width: 100%; margin: 14px 0 20px; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: #17354e; background: #eef3f7; font-weight: 700; }
+    tbody tr:nth-child(even) td { background: #fafcfd; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: 5px; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(105px, 1fr));
+      align-items: stretch;
+      gap: 8px;
+      margin: 18px 0;
+    }
+    .flow .node { display: grid; place-items: center; min-height: 78px; padding: 10px; border: 1px solid #bfd2e1; border-radius: 10px; background: #f1f7fb; text-align: center; font-size: 12px; font-weight: 700; }
+    .flow .arrow { display: grid; place-items: center; color: var(--blue); font-size: 20px; }
+    .architecture { display: grid; gap: 12px; margin: 18px 0; }
+    .layer { display: grid; grid-template-columns: 170px 1fr; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .layer b { display: grid; place-items: center; padding: 14px; color: white; background: #245679; }
+    .layer div { padding: 14px 18px; background: #f8fbfd; }
+    .kicker { margin: 0 0 4px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .two-col-list { columns: 2; column-gap: 36px; }
+    .three-col-list { columns: 3; column-gap: 32px; }
+    .compact li { margin-top: 2px; }
+    .state-line { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 12px 0; }
+    .state-line span { padding: 6px 10px; border: 1px solid #cad6df; border-radius: 8px; background: #f8fafc; font: 12px Consolas, monospace; }
+    .state-line i { color: #8292a2; font-style: normal; }
+    .filetree { padding: 16px 20px; overflow: auto; border: 1px solid #273b4e; border-radius: 10px; color: #d9e6f1; background: #152433; font-size: 12px; line-height: 1.65; }
+    .small { color: var(--muted); font-size: 12px; }
+    .status-table td:first-child { width: 54px; font-weight: 800; }
+    .footer { margin: 34px 0 0; padding: 22px 10px; color: #647383; text-align: center; font-size: 12px; }
+    @media (max-width: 1100px) {
+      .layout { display: block; }
+      aside { position: static; width: 100%; height: auto; }
+      nav { columns: 3; padding-bottom: 12px; }
+      nav .group { break-before: column; }
+      main { padding: 20px; }
+      .grid-4, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .flow { grid-template-columns: 1fr; }
+      .flow .arrow { transform: rotate(90deg); }
+    }
+    @media (max-width: 700px) {
+      nav { columns: 1; }
+      nav .group { break-before: auto; }
+      .hero { padding: 36px 26px; }
+      section { padding: 26px 20px; }
+      .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .layer { grid-template-columns: 1fr; }
+      .two-col-list, .three-col-list { columns: 1; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      body { background: white; }
+      .layout { display: block; }
+      aside { display: none; }
+      main { width: 100%; padding: 0; }
+      .hero { border-radius: 0; box-shadow: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      section { break-inside: avoid; box-shadow: none; border-radius: 0; }
+      h2, h3 { break-after: avoid; }
+      table { break-inside: auto; }
+      tr { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand">
+      <div class="brand-mark">SW</div>
+      <strong>系统功能报告</strong>
+      <small>SolidWorks 智能建模助手 v3.0.0</small>
+    </div>
+    <nav aria-label="报告目录">
+      <div class="group">总览</div>
+      <a href="#summary">1. 执行摘要</a>
+      <a href="#positioning">2. 产品定位与边界</a>
+      <a href="#capability-map">3. 功能全景</a>
+      <a href="#architecture">4. 系统架构</a>
+      <a href="#ui">5. 界面与交互</a>
+      <div class="group">核心功能</div>
+      <a href="#planning">6. 智能规划</a>
+      <a href="#toolset">7. 建模工具协议</a>
+      <a href="#execution">8. 单步执行与恢复</a>
+      <a href="#library">9. 本地模型库</a>
+      <a href="#derivation">10. 复制、派生与导出</a>
+      <a href="#advanced">11. 诊断与工程自动化</a>
+      <a href="#automation">12. 批处理与操作学习</a>
+      <a href="#addin">13. C# Add-in 事件桥</a>
+      <a href="#mcp">14. MCP 只读集成</a>
+      <div class="group">工程质量</div>
+      <a href="#data">15. 数据与数据库</a>
+      <a href="#security">16. 安全与隐私</a>
+      <a href="#validation">17. 测试与实机验证</a>
+      <a href="#release">18. 构建与发布</a>
+      <a href="#operations">19. 典型使用流程</a>
+      <a href="#limitations">20. 已知限制</a>
+      <a href="#recommendations">21. 后续建议</a>
+      <a href="#appendix">22. 附录</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <p class="eyebrow">SOURCE-AUDITED FUNCTION REPORT · 2026-08-11</p>
+      <h1>SolidWorks 智能建模助手<br>系统功能报告</h1>
+      <p>基于当前源码、数据库 schema、UI 实现、自动化测试和 SolidWorks 2025 SP5.0 实机证据整理。报告重点不是罗列菜单，而是说明每项能力如何执行、如何验证、何时暂停，以及哪些外部条件仍未完成验证。</p>
+      <div class="hero-meta">
+        <span>产品版本 3.0.0</span>
+        <span>Python 3.11+ / PySide6</span>
+        <span>官方 SolidWorks COM API</span>
+        <span>C# .NET Framework 4.8 Add-in</span>
+        <span>SQLite schema 3</span>
+        <span>Manifest schema 2</span>
+      </div>
+    </header>
+
+    <section id="summary">
+      <p class="kicker">01 · Executive summary</p>
+      <h2>执行摘要</h2>
+      <p class="lead">当前系统已经形成“自然语言规划—受限工具校验—单步 SolidWorks 执行—模型快照后验—失败恢复—本地模型资产管理”的完整桌面应用闭环。</p>
+
+      <div class="grid grid-4">
+        <div class="card metric"><b>159</b><span>当前自动化测试通过</span></div>
+        <div class="card metric"><b>54</b><span>Python 应用源码文件</span></div>
+        <div class="card metric"><b>25 / 25</b><span>SolidWorks 2025 Add-in 能力反射可用</span></div>
+        <div class="card metric"><b>12</b><span>高级能力组完成代码、UI 或入口与测试</span></div>
+      </div>
+
+      <div class="grid grid-3" style="margin-top:16px">
+        <div class="card">
+          <h3><span class="badge done">已实现</span> 受控建模智能体</h3>
+          <p>模型只输出 JSON 计划，不能接触 COM 对象；每次只执行一个白名单工具，并用执行前后快照证明结果。</p>
+        </div>
+        <div class="card">
+          <h3><span class="badge done">已实现</span> 本地模型资产底座</h3>
+          <p>快速扫描、完整 SHA-256、参数 Manifest、参数快照去重、依赖/质量/相似度分析以及安全派生均已落库。</p>
+        </div>
+        <div class="card">
+          <h3><span class="badge conditional">条件可用</span> 企业与多版本能力</h3>
+          <p>PDM、Document Manager、带 PMI 夹具和 2024/2026 多版本验证受许可证与机器环境约束，会明确显示不可用或未验证。</p>
+        </div>
+      </div>
+
+      <div class="callout success"><strong>核心结论：</strong>系统的可靠性不建立在“生成更长、更聪明的命令串”上，而建立在显式状态、能力门控、单步执行、后验验证、持久引用和人工接管上。即便模型服务不可用，离线规划、模型库、诊断、批任务和本地分析仍可独立工作。</div>
+    </section>
+
+    <section id="positioning">
+      <p class="kicker">02 · Product boundary</p>
+      <h2>产品定位与边界</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>系统是什么</h3>
+          <ul>
+            <li>面向 Windows + SolidWorks 的交互式桌面智能体。</li>
+            <li>简单零件自然语言建模、计划预览、逐步执行和失败恢复工具。</li>
+            <li>本地零件、装配体、工程图的索引、参数库和派生工作台。</li>
+            <li>SolidWorks 内嵌 Task Pane、事件桥和版本能力检测器。</li>
+            <li>模型健康、装配、工程图、制造检查和批处理的统一应用层。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>系统不是什么</h3>
+          <ul>
+            <li>不是绕过确认、无限重试的一次性宏执行器。</li>
+            <li>不是通过鼠标键盘坐标模拟 SolidWorks 操作的 RPA。</li>
+            <li>不是 PDM 替代品；PDM 接口仅定位为只读查询。</li>
+            <li>不是任意复杂曲面/扫描/放样/孔向导的通用重绘器。</li>
+            <li>不是把相似度或参数哈希当作几何等价证明的系统。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout warning"><strong>责任边界：</strong>模型负责提出结构化建议，本地验证器、能力矩阵、执行状态机和用户确认拥有最终控制权。写操作只能由 Python STA COM Worker 执行；C# Add-in 只采集事件与上下文。</div>
+    </section>
+
+    <section id="capability-map">
+      <p class="kicker">03 · Capability map</p>
+      <h2>功能全景</h2>
+      <table class="status-table">
+        <thead><tr><th>领域</th><th>核心能力</th><th>主要用户入口</th><th>当前状态</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>自然语言需求预检、在线/离线规划、ISO 4762 确定性规划、结构化计划校验、二维轮廓预览</td><td>智能建模</td><td><span class="badge done">已实现并测试</span></td></tr>
+          <tr><td>B</td><td>单步执行、连续执行、快照后验、有限重试、改参数、人工验证、模型替代后缀、受控跳过</td><td>智能建模 / 恢复卡片</td><td><span class="badge done">已实现并测试</span></td></tr>
+          <tr><td>C</td><td>模型库快速扫描、深度参数读取、无界面属性读取、分页、哈希、缺失标记和停止</td><td>本地模型库</td><td><span class="badge done">已实现并测试</span></td></tr>
+          <tr><td>D</td><td>零件字节复制、参数派生、产品族、装配体 Pack and Go、安全格式导出</td><td>本地模型库 / 工程自动化</td><td><span class="badge done">代码完成</span></td></tr>
+          <tr><td>E</td><td>参数对比、依赖图、质量检查、相似模型、健康诊断、语义搜索、PMI/DFM</td><td>模型库菜单 / 模型库页</td><td><span class="badge done">已实现并测试</span></td></tr>
+          <tr><td>F</td><td>装配体组件/引用/干涉检查、持久引用配合创建、工程图视图/BOM/气泡/尺寸导入</td><td>工程自动化菜单</td><td><span class="badge done">2025 实机通过</span></td></tr>
+          <tr><td>G</td><td>持久批任务、租约/心跳、暂停/恢复/取消、崩溃恢复、幂等项</td><td>自动化中心</td><td><span class="badge done">1000 项压测通过</span></td></tr>
+          <tr><td>H</td><td>人工操作示教、命令/上下文差异、配方审批、逐步引导回放</td><td>自动化中心</td><td><span class="badge done">已实现并测试</span></td></tr>
+          <tr><td>I</td><td>SolidWorks Task Pane、文档/选择实时上下文、事件 JSONL、25 项能力探测</td><td>SolidWorks 内嵌面板 / 右侧上下文卡</td><td><span class="badge done">2025 实机通过</span></td></tr>
+          <tr><td>J</td><td>PDM、Document Manager、PMI、多版本能力实验</td><td>工程自动化 / 设置 / 自动化中心</td><td><span class="badge conditional">受环境约束</span></td></tr>
+          <tr><td>K</td><td>只读 MCP：搜索、Manifest、质量、依赖、相似度、对比、工具能力</td><td>标准输入输出 MCP 服务</td><td><span class="badge done">只读基座完成</span></td></tr>
+          <tr><td>L</td><td>PyInstaller、便携 ZIP、IExpress 安装器、卸载项、Add-in 注册载荷</td><td>构建/安装脚本</td><td><span class="badge conditional">已构建，未签名</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="architecture">
+      <p class="kicker">04 · Architecture</p>
+      <h2>系统架构与进程边界</h2>
+      <p class="lead">系统采用桌面主进程、独立 STA COM Worker、SolidWorks 进程内 C# Add-in 三个运行边界。三者只交换可序列化数据，COM 引用不会跨进程传播。</p>
+
+      <div class="architecture">
+        <div class="layer"><b>交互层</b><div><strong>PySide6 UI</strong>：四个工作区、自定义标题栏、菜单、计划预览、进度、恢复、活动审计和实时上下文。</div></div>
+        <div class="layer"><b>应用编排层</b><div><strong>ApplicationController</strong>：异步请求号、Qt 信号、互斥任务槽、统一停止、后台线程、旧版迁移和 UI 状态同步。</div></div>
+        <div class="layer"><b>领域服务层</b><div><strong>Planning / Execution / Library / Advanced / Automation</strong>：计划协议、状态机、后验、模型库、工程服务、任务租约和能力门控。</div></div>
+        <div class="layer"><b>基础设施层</b><div><strong>SQLite / DPAPI / JSONL / Audit</strong>：设置、历史、模型库、批任务、语义索引、配方、能力证据和脱敏日志。</div></div>
+        <div class="layer"><b>SolidWorks 边界</b><div><strong>Python STA Worker</strong> 是唯一写执行器；<strong>C# Add-in</strong> 负责 Task Pane、应用/文档事件、轻量上下文和能力反射。</div></div>
+      </div>
+
+      <h3>一次写操作的完整链路</h3>
+      <div class="flow" aria-label="写操作流程">
+        <div class="node">用户需求或工程任务</div><div class="arrow">→</div>
+        <div class="node">预检与能力门控</div><div class="arrow">→</div>
+        <div class="node">结构化 ToolCall</div><div class="arrow">→</div>
+        <div class="node">STA Worker 单步 COM</div>
+      </div>
+      <div class="flow">
+        <div class="node">执行前快照</div><div class="arrow">→</div>
+        <div class="node">执行及 API 证据</div><div class="arrow">→</div>
+        <div class="node">执行后新快照</div><div class="arrow">→</div>
+        <div class="node">后验通过 / 暂停恢复</div>
+      </div>
+
+      <h3>源码包职责</h3>
+      <table>
+        <thead><tr><th>包</th><th>职责</th><th>物理规模</th></tr></thead>
+        <tbody>
+          <tr><td><code>advanced</code></td><td>健康、产品族、装配、工程图、语义搜索、学习、PMI/DFM、PDM、能力实验室</td><td>12 文件 / 约 1,949 行</td></tr>
+          <tr><td><code>automation</code></td><td>Job/JobItem、幂等、租约、心跳、暂停/恢复/取消和 Runner</td><td>2 文件 / 约 545 行</td></tr>
+          <tr><td><code>domain</code></td><td>Plan、ToolCall、ModelSnapshot、StepResult、状态和错误</td><td>3 文件 / 约 199 行</td></tr>
+          <tr><td><code>execution</code></td><td>执行状态机、失败指纹、后验和恢复</td><td>2 文件 / 约 276 行</td></tr>
+          <tr><td><code>infrastructure</code></td><td>路径、设置、DPAPI、审计和历史</td><td>5 文件 / 约 343 行</td></tr>
+          <tr><td><code>integration</code></td><td>可选只读 MCP 服务</td><td>2 文件 / 约 96 行</td></tr>
+          <tr><td><code>library</code></td><td>扫描、Manifest、仓储、分析、派生、Pack and Go、导出、Document Manager</td><td>8 文件 / 约 1,806 行</td></tr>
+          <tr><td><code>planning</code></td><td>需求预检、离线规划、ISO 标准件计划、模型客户端和响应修复</td><td>2 文件 / 约 430 行</td></tr>
+          <tr><td><code>solidworks</code></td><td>Worker Client、Worker、Gateway、事件桥消费端、实时上下文</td><td>6 文件 / 约 2,862 行</td></tr>
+          <tr><td><code>ui</code></td><td>主窗口、主题、自定义标题栏、设置和计划预览</td><td>6 文件 / 约 2,170 行</td></tr>
+          <tr><td>根级应用模块</td><td>入口、ApplicationController、工具注册表和迁移</td><td>6 文件 / 约 1,684 行</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="ui">
+      <p class="kicker">05 · User interface</p>
+      <h2>界面与交互结构</h2>
+      <p class="lead">主界面为无系统标题栏的 PySide6 桌面窗口，默认 1540×900，最小 1220×760。左侧固定导航、中部工作区、右侧活动与审计面板，低频能力收纳到顶部菜单。</p>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>四个工作区</h3>
+          <ol>
+            <li><strong>智能建模：</strong>需求、计划进度、二维预览、步骤表、执行、命名目标和失败恢复。</li>
+            <li><strong>本地模型库：</strong>扫描/深读、搜索、分页、Manifest 详情、安全派生和诊断。</li>
+            <li><strong>自动化中心：</strong>持久任务、暂停/继续/取消、能力实验、示教与回放。</li>
+            <li><strong>历史与诊断：</strong>时间、状态、需求和错误记录。</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>全局右侧面板</h3>
+          <ul>
+            <li>当前运行状态与操作反馈。</li>
+            <li>SolidWorks 活动文档、配置、选择数和连接/忙/过期状态。</li>
+            <li>最多保留 3,000 个界面日志块。</li>
+            <li>“清空界面日志”只清 UI，不改变持久审计或历史。</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>顶部菜单</h3>
+      <table>
+        <thead><tr><th>菜单</th><th>功能</th></tr></thead>
+        <tbody>
+          <tr><td>文件</td><td>新任务（Ctrl+N）、本地模型库（Ctrl+L）、退出</td></tr>
+          <tr><td>设置</td><td>模型服务、API Key、Document Manager 许可证密钥</td></tr>
+          <tr><td>模型库</td><td>引用与质量、模型健康、相似模型、两个参数快照对比、语义索引</td></tr>
+          <tr><td>自动化</td><td>自动化中心、运行排队任务、版本能力实验</td></tr>
+          <tr><td>工程自动化</td><td>装配体检查、持久引用配合、工程图生成、PMI/DFM、PDM 只读状态</td></tr>
+          <tr><td>帮助</td><td>日志位置、关于</td></tr>
+        </tbody>
+      </table>
+
+      <h3>反馈原则</h3>
+      <ul class="two-col-list">
+        <li>点击生成后立即禁用重复提交并显示阶段和秒数。</li>
+        <li>缺失尺寸显示“需要补充建模条件”，不冒充模型调用失败。</li>
+        <li>未知总量使用活动进度，已知文件数使用确定进度。</li>
+        <li>错误以内联卡为主，只有阻塞确认使用模态对话框。</li>
+        <li>模型过程展示可记录阶段、参数和校验，不展示内部思维链。</li>
+        <li>颜色不是唯一状态信息；同时显示文字状态。</li>
+      </ul>
+    </section>
+
+    <section id="planning">
+      <p class="kicker">06 · Planning</p>
+      <h2>智能规划系统</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>在线模型规划</h3>
+          <ul>
+            <li>兼容 OpenAI Chat Completions 的 HTTP/HTTPS 服务。</li>
+            <li>发送用户需求、工具 schema 和必要上下文；不发送 COM、数据库连接或 API Key。</li>
+            <li>禁止重定向；使用系统 TLS 信任；模型超时可配置为 1–300 秒。</li>
+            <li>响应必须解析成 JSON <code>Plan</code>，未知字段、未知工具和未知参数均拒绝。</li>
+            <li>模型修复只允许替换失败步骤及其后缀，成功前缀不可被改写。</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>本地离线规划</h3>
+          <ul>
+            <li>无模型服务时支持基础圆、矩形、圆柱类需求。</li>
+            <li>能区分半径/直径并要求明确拉伸深度。</li>
+            <li>关键尺寸缺失时最多提出三个澄清问题，不猜测数值。</li>
+            <li>ISO 4762 M3–M12 内六角圆柱头螺钉采用确定性参数表，不依赖模型自由发挥。</li>
+            <li>计划通过后生成本地二维轮廓和特征摘要，仅作为执行前预览。</li>
+          </ul>
+        </div>
+      </div>
+      <h3>计划数据契约</h3>
+      <table>
+        <thead><tr><th>对象</th><th>字段</th><th>约束</th></tr></thead>
+        <tbody>
+          <tr><td><code>Plan</code></td><td><code>id</code>、<code>task</code>、<code>created_at</code>、<code>steps</code></td><td>任务不能为空；至少 1 步；最多 500 步；未知字段拒绝。</td></tr>
+          <tr><td><code>ToolCall</code></td><td><code>id</code>、<code>tool</code>、<code>arguments</code>、<code>description</code></td><td>参数必须可 JSON 序列化；NaN/Infinity 和非支持类型拒绝。</td></tr>
+          <tr><td><code>ModelSnapshot</code></td><td>连接、文档、草图、实体数、特征数、体积、面积、质量、选择数、时间</td><td>质量不可用时以 <code>mass_available=false</code> 表示，不能把 0 当真实质量。</td></tr>
+          <tr><td><code>StepResult</code></td><td>成功、消息、错误码、数据、前后快照、耗时</td><td>API 成功但后验不成立仍为失败。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="toolset">
+      <p class="kicker">07 · Tool protocol</p>
+      <h2>公开建模工具协议</h2>
+      <p class="lead">模型可见工具共 14 个。文件派生、Pack and Go、导出、产品族、工程图和装配配合属于应用内部命令，不直接暴露给模型。</p>
+      <table>
+        <thead><tr><th>工具</th><th>用途与主要参数</th><th>本地前置/后验</th></tr></thead>
+        <tbody>
+          <tr><td><code>session.ensure</code></td><td>连接或启动 SolidWorks</td><td>后验必须检测到连接。</td></tr>
+          <tr><td><code>document.new_part</code></td><td>新建未保存零件</td><td>同一计划只能建立一个文档；必须出现新的零件标题。</td></tr>
+          <tr><td><code>document.open_readonly</code></td><td><code>path</code></td><td>静默只读打开；必须返回目标文档路径。</td></tr>
+          <tr><td><code>selection.plane</code></td><td><code>front / top / right</code></td><td>先有可写零件；后验选择数大于 0。</td></tr>
+          <tr><td><code>sketch.begin</code></td><td>在 front/top/right 基准面开始草图</td><td>不能嵌套活动草图；后验进入草图编辑。</td></tr>
+          <tr><td><code>sketch.begin_face</code></td><td>在上一建模特征最外侧平面端面开始草图</td><td>必须先有实体；按法向和距离解析端面，不依赖面序号。</td></tr>
+          <tr><td><code>sketch.circle</code></td><td>中心坐标、<code>radius_mm</code></td><td>半径 0.0001–1,000,000 mm；实体数必须增加。</td></tr>
+          <tr><td><code>sketch.rectangle</code></td><td>中心坐标、宽、高</td><td>尺寸有界；生成中心矩形；实体数必须增加。</td></tr>
+          <tr><td><code>sketch.polygon</code></td><td>中心、外接圆半径、3–128 边、旋转角</td><td>生成闭合正多边形；用于端面后续切除等流程。</td></tr>
+          <tr><td><code>sketch.line</code></td><td>起点和终点坐标</td><td>拒绝重合端点；特征前检查直线轮廓闭合。</td></tr>
+          <tr><td><code>sketch.centerline</code></td><td>起点和终点坐标</td><td>同一旋转草图只能有一条中心轴。</td></tr>
+          <tr><td><code>feature.extrude</code></td><td>深度、boss/cut、blind/mid_plane、reverse、merge</td><td>切除前必须有实体；后验检查草图退出、特征/实体/体积变化。</td></tr>
+          <tr><td><code>feature.revolve</code></td><td>0.0001–360°、boss/cut、reverse、merge</td><td>必须有闭合轮廓和中心线；切除前必须有实体。</td></tr>
+          <tr><td><code>model.inspect</code></td><td>只读当前模型状态</td><td>不修改文档，用于重新快照与人工完成验证。</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>顺序校验：</strong>计划在进入 SolidWorks 前就会拒绝“未新建零件便选面”“没有活动草图便画几何”“开放直线轮廓直接拉伸”“没有实体便切除”“旋转缺少中心线”等语义错误。</div>
+    </section>
+
+    <section id="execution">
+      <p class="kicker">08 · Execution and recovery</p>
+      <h2>单步执行、验证与失败恢复</h2>
+      <h3>执行状态</h3>
+      <div class="state-line"><span>idle</span><i>→</i><span>ready</span><i>→</i><span>running</span><i>→</i><span>completed</span></div>
+      <div class="state-line"><span>running</span><i>→</i><span>paused</span><i>→</i><span>running / aborted</span></div>
+      <p>“执行全部”并不是把整组命令提交给 SolidWorks，而是循环调用同一单步接口；每一步都重新经过参数验证、前快照、COM 调用、后快照和后验条件。</p>
+
+      <h3>五种恢复方式</h3>
+      <table>
+        <thead><tr><th>恢复方式</th><th>行为</th><th>安全限制</th></tr></thead>
+        <tbody>
+          <tr><td>调整环境后重试</td><td>用户修复模板、选择、文档状态或连接后重试当前步骤。</td><td>同一失败指纹不能无限原样重试。</td></tr>
+          <tr><td>编辑参数并重试</td><td>只替换失败 ToolCall 的参数，并重新走 schema 校验。</td><td>未知参数、越界数值和无效顺序仍会被拒绝。</td></tr>
+          <tr><td>人工完成后验证</td><td>用户在 SolidWorks 手动操作，系统仅采集新快照并验证预期变化。</td><td>没有通过后验就不能标记成功。</td></tr>
+          <tr><td>让模型修复后续计划</td><td>发送脱敏失败上下文，模型返回替代后缀。</td><td>成功前缀不可替换；文件路径等模型绑定字段脱敏。</td></tr>
+          <tr><td>受控跳过</td><td>记录跳过并继续。</td><td>若后续特征依赖失败的轮廓/实体则拒绝跳过。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>“停止全部”的真实语义</h3>
+      <ul>
+        <li>立即让规划请求号失效，迟到模型响应不能改写 UI。</li>
+        <li>设置模型库、分析、派生和持久任务取消信号。</li>
+        <li>终止助手自己的 COM Worker，解除阻塞调用并阻止后续步骤。</li>
+        <li>不会强杀用户正在使用的 SolidWorks 主进程。</li>
+        <li>SolidWorks 已经受理的同步原子 COM 调用可能在 Worker 终止前完成；继续前必须重新连接并重新快照。</li>
+      </ul>
+    </section>
+
+    <section id="library">
+      <p class="kicker">09 · Local model library</p>
+      <h2>本地模型库与参数库</h2>
+      <p class="lead">模型库支持 <code>.SLDPRT</code>、<code>.SLDASM</code>、<code>.SLDDRW</code>，采用“文件系统快速扫描”和“SolidWorks 深度读取”两个独立阶段。</p>
+      <div class="grid grid-3">
+        <div class="card"><h3>快速扫描</h3><p>递归发现文件，记录规范路径、类型、大小、修改时间和快速指纹；完全不启动 SolidWorks。目录遍历不完整时不会错误标记缺失文件。</p></div>
+        <div class="card"><h3>深度读取</h3><p>逐文件进入 COM Worker，读取配置、属性、尺寸、特征、材料、方程、质量、几何摘要、装配引用和工程图页/视图。</p></div>
+        <div class="card"><h3>无界面属性读取</h3><p>配置合法 Document Manager 密钥后，不启动完整 SolidWorks 读取配置、属性和引用；结果标记为 metadata_ready，不冒充完整深读。</p></div>
+      </div>
+
+      <h3>三种哈希</h3>
+      <table>
+        <thead><tr><th>哈希</th><th>用途</th><th>不能证明什么</th></tr></thead>
+        <tbody>
+          <tr><td><code>quick_fingerprint</code></td><td>文件头尾分块和元数据，用于大量文件的快速增量发现。</td><td>不能证明文件内容完全相同。</td></tr>
+          <tr><td><code>file_sha256</code></td><td>完整文件哈希，用于深读跳过、写任务源版本锁和源文件不变验证。</td><td>不能解释参数或几何差异。</td></tr>
+          <tr><td><code>manifest_sha256</code></td><td>规范化参数 JSON 哈希，用于参数快照去重和变更检测。</td><td>不能证明两个模型几何等价。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Manifest schema 2 内容</h3>
+      <ul class="three-col-list compact">
+        <li>路径、标题、文档类型</li><li>配置列表与活动配置</li><li>文档自定义属性</li>
+        <li>配置级属性</li><li>材料</li><li>方程</li>
+        <li>特征序列与错误码</li><li>尺寸原始系统值</li><li>识别长度的毫米显示值</li>
+        <li>质量/面积/体积摘要</li><li>装配组件与引用</li><li>工程图页和视图</li>
+        <li>几何摘要</li><li>采集时间</li><li>参数来源/完整度状态</li>
+      </ul>
+
+      <h3>增量与一致性策略</h3>
+      <ol>
+        <li>扫描阶段先更新快速指纹；文件变化则把参数状态标记为 stale。</li>
+        <li>深读前计算完整 SHA-256；只有完整哈希与参数状态均满足才跳过 SolidWorks。</li>
+        <li>读取前后再次计算完整 SHA-256；读取期间文件变化则丢弃 Manifest 并提示重试。</li>
+        <li>Manifest 排除路径/标题/采集时间等采集元数据后规范化计算参数哈希。</li>
+        <li>相同文档与相同 Manifest 哈希不重复创建参数快照。</li>
+        <li>取消时保留已完成记录，但不做“未发现即缺失”的收尾。</li>
+      </ol>
+
+      <h3>模型库 UI</h3>
+      <p>支持名称/路径搜索、每页 1–1000 条（默认 200）、上一页/下一页、扩展多选和完整 Manifest 详情。列表显示名称、类型、参数状态、参数哈希、大小和路径；扫描、深读、无界面读取、派生和分析共享互斥后台任务槽，避免同时写库或占用 Worker。</p>
+    </section>
+
+    <section id="derivation">
+      <p class="kicker">10 · Safe derivation</p>
+      <h2>复制、参数派生、产品族、Pack and Go 与导出</h2>
+      <div class="callout"><strong>统一发布模型：</strong><code>planned → staging → verifying → committing → succeeded/failed</code>。任何目标都必须不存在；写入只发生在临时副本或临时目录；源哈希变化、API 非零状态、空输出或验证失败时不发布。</div>
+
+      <table>
+        <thead><tr><th>功能</th><th>处理方法</th><th>验证与限制</th></tr></thead>
+        <tbody>
+          <tr><td>零件原样复制</td><td>独占创建目标，分块字节复制并同步元数据。</td><td>源/目标 SHA-256 必须一致；只支持 SLDPRT；失败删除目标。</td></tr>
+          <tr><td>零件参数派生</td><td>先生成唯一临时 SLDPRT，修改 1–500 个毫米参数，重建、保存、重开并返回 Manifest。</td><td>参数范围 ±1,000,000 mm；源哈希前后不变；目标不覆盖。</td></tr>
+          <tr><td>配置/产品族</td><td>在隔离副本中创建配置矩阵、稳定尺寸列和配置属性。</td><td>配置名/尺寸列一致性校验；逐配置激活、重建、保存与重开验证。</td></tr>
+          <tr><td>装配体 Pack and Go</td><td>调用官方 Pack and Go，可包含工程图和 Toolbox 引用。</td><td>输出不得越过临时目录；无空文件；至少一个 SLDASM；包哈希可复核。</td></tr>
+          <tr><td>工程图生成</td><td>由 DrawingSpec 生成视图、剖视、BOM、气泡、模型尺寸并保存。</td><td>父视图关系、本地化标准视图、BOM API 版本回退和重开 Manifest 验证。</td></tr>
+          <tr><td>安全导出</td><td>使用 <code>IModelDocExtension.SaveAs3</code> 输出唯一临时文件，再发布。</td><td>拒绝脏文档、格式错配、非零保存错误、空输出和目标覆盖。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>导出格式矩阵</h3>
+      <table>
+        <thead><tr><th>源文档</th><th>允许格式</th><th>明确拒绝示例</th></tr></thead>
+        <tbody>
+          <tr><td>零件 SLDPRT</td><td>STEP/STP、STL、IGES/IGS</td><td>PDF、DWG、DXF</td></tr>
+          <tr><td>装配体 SLDASM</td><td>STEP/STP、STL、IGES/IGS</td><td>普通文件复制、PDF</td></tr>
+          <tr><td>工程图 SLDDRW</td><td>PDF、DXF、DWG</td><td>STEP、STL、IGES；普通工程图复制</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="advanced">
+      <p class="kicker">11 · Engineering intelligence</p>
+      <h2>诊断、搜索与工程自动化</h2>
+      <div class="grid grid-3">
+        <div class="card"><h3>模型健康诊断</h3><p>统一 DiagnosticIssue，包含稳定规则 ID、严重度、范围、对象引用、证据、说明、建议和可自动修复标识；检查特征错误、引用、质量、材料/属性等。</p></div>
+        <div class="card"><h3>参数快照对比</h3><p>按尺寸、文档/配置属性、特征序列、材料和几何摘要分组输出差异；要求选择两个已读参数文档。</p></div>
+        <div class="card"><h3>依赖与质量</h3><p>解析装配组件和工程图视图引用，识别未入库、磁盘缺失、重复引用、压缩组件、特征错误和质量不可用。</p></div>
+        <div class="card"><h3>相似模型</h3><p>按特征类型、尺寸名称、属性字段和材料透明加权，用于候选排序；不会宣称几何等价。</p></div>
+        <div class="card"><h3>本地语义搜索</h3><p>把模型名称、材料、属性、特征等规范成字段词项，持久化本地索引；返回命中字段和得分解释，无网络仍可工作。</p></div>
+        <div class="card"><h3>PMI / DimXpert / DFM</h3><p>通过能力门控读取 PMI 记录；不可用时回退本地 DFM 规则并清楚区分“无数据”“不可用”和“检查通过”。</p></div>
+      </div>
+
+      <h3>装配体助手</h3>
+      <ul>
+        <li>读取组件路径、固定/自由状态、缺失引用和干涉结果。</li>
+        <li>命名目标用 <code>GetPersistReference3</code> 保存，用 <code>GetObjectByPersistReference3</code> 恢复。</li>
+        <li>配合请求包含两个持久引用、配合类型和对齐方式；当前实机验证覆盖平行配合。</li>
+        <li>创建后以返回特征、重建状态和后快照作为证据，不只相信 API 布尔值。</li>
+        <li>拓扑变化导致引用失效时暂停，不按面序号猜替代对象。</li>
+      </ul>
+
+      <h3>工程图自动化</h3>
+      <ul class="two-col-list">
+        <li>主视、俯视、右视和等轴测。</li>
+        <li>带父视图约束的投影视图。</li>
+        <li>基于模型包围盒生成剖切线和剖视图。</li>
+        <li>BOM 明细表及旧版视图 API 回退。</li>
+        <li>自动气泡。</li>
+        <li>模型尺寸导入。</li>
+        <li>PDF / DWG 输出。</li>
+        <li>保存后重开 Manifest 检查。</li>
+      </ul>
+
+      <h3>PDM 与 Document Manager</h3>
+      <p>两者都遵循显式只读边界。PDM 读取仓库状态、版本、检出与引用信息；Document Manager 在合法许可证下无界面读取元数据。许可证缺失、COM 未安装或成员不可用时，能力状态返回 <code>unavailable</code>，不会尝试写入或用空结果伪装成功。</p>
+    </section>
+
+    <section id="automation">
+      <p class="kicker">12 · Persistent automation</p>
+      <h2>持久批处理与人工操作学习</h2>
+      <h3>持久 Job / JobItem</h3>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4>任务能力</h4>
+          <ul><li>queued/running/paused/waiting_user/succeeded/failed/cancelled 状态。</li><li>每个任务项具有顺序和幂等键。</li><li>租约、心跳、尝试次数、恢复时间和错误分类。</li><li>暂停、继续、取消、过期租约回收和崩溃恢复。</li></ul>
+        </div>
+        <div class="card">
+          <h4>UI 能力</h4>
+          <ul><li>运行排队任务、刷新、暂停、继续、取消。</li><li>显示任务 ID、类型、状态、进度、成功、失败和消息。</li><li>“停止全部”请求所有未终结任务取消。</li><li>当前 UI 尚无通用“新建任意批处理”编辑器。</li></ul>
+        </div>
+      </div>
+      <p>当前自动化门禁包含 1,000 个独立任务项压力测试，覆盖逐项提交、幂等、租约、暂停/恢复/取消和统一停止。</p>
+
+      <h3>人工操作示教</h3>
+      <ol>
+        <li>用户开始示教会话，并在 SolidWorks 中人工操作。</li>
+        <li>Add-in 记录命令事件，系统保存步骤前后 ContextSnapshot 差异。</li>
+        <li>系统形成配方候选，初始状态为草稿/待审阅。</li>
+        <li>用户批准最近配方后才允许使用。</li>
+        <li>引导回放一次只显示一个目标、预期变化和操作建议，等待人工确认后进入下一步。</li>
+      </ol>
+      <div class="callout warning">操作学习不是自动“录宏后盲重放”。配方包含文档类型、上下文约束、目标解析策略、风险和成功/失败统计；不同拓扑上下文不能直接复用持久目标。</div>
+
+      <h3>多版本能力实验室</h3>
+      <p>按 SolidWorks 修订号、Interop 版本、能力 ID、环境标签和证据记录结果，能力状态为 available/unavailable/unknown。它用于构建真实版本矩阵和发布门禁，不用“当前 Interop 有成员”替代完整夹具回归。</p>
+    </section>
+
+    <section id="addin">
+      <p class="kicker">13 · In-process integration</p>
+      <h2>C# Add-in、Task Pane 与实时事件桥</h2>
+      <p class="lead"><code>src-dotnet/SolidWorksAssistant.EventBridge</code> 目标为 .NET Framework 4.8 / x64，通过官方 <code>ISwAddin</code> 接入 SolidWorks。它是只读侧车，不是建模执行器。</p>
+
+      <div class="grid grid-3">
+        <div class="card"><h3>Task Pane</h3><p>显示连接状态、活动文档、配置和选择数量，并提供启动桌面助手入口。</p></div>
+        <div class="card"><h3>事件宿主</h3><p>订阅应用、零件、装配体和工程图事件；回调线程只构造普通数据并入队。</p></div>
+        <div class="card"><h3>能力矩阵</h3><p>反射当前加载 Interop 类型和成员，覆盖 Task Pane、事件、持久引用、SaveAs3、Pack and Go、产品族、配合、工程图、PMI、草图和基础特征等 25 项。</p></div>
+      </div>
+
+      <h3>事件与文件通道</h3>
+      <table>
+        <thead><tr><th>通道</th><th>位置/名称</th><th>机制</th></tr></thead>
+        <tbody>
+          <tr><td>事件流</td><td><code>%LOCALAPPDATA%\SolidWorksAIAssistant\event-bridge\events.jsonl</code></td><td>UTF-8 JSONL，10 MB 轮转保留一个 .1；Python 从当前文件末尾开始监听。</td></tr>
+          <tr><td>能力快照</td><td><code>capabilities.json</code></td><td>当前 SolidWorks/Interop 版本和逐项能力证据。</td></tr>
+          <tr><td>诊断</td><td><code>diagnostics.log</code></td><td>Add-in 生命周期和异常诊断。</td></tr>
+          <tr><td>可选低延迟通道</td><td><code>SolidWorksAssistant.EventBridge.v1</code></td><td>命名管道；无监听器快速降级到 JSONL，不阻塞 SolidWorks。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>当前事件</h3>
+      <p class="small"><code>bridge.connected</code>、<code>bridge.heartbeat</code>、<code>bridge.disconnecting</code>、<code>document.created</code>、<code>document.opened</code>、<code>document.loaded</code>、<code>document.closed</code>、<code>document.active_changed</code>、<code>document.events_attached</code>、<code>document.selection_changed</code>、<code>document.regenerated</code>、<code>document.saved</code>、<code>document.destroyed</code>、<code>context.changed</code>、<code>command.started</code>、<code>command.finished</code>、<code>solidworks.destroying</code>。</p>
+      <div class="callout danger"><strong>证据边界：</strong>事件表示“某状态可能变化”，不能证明建模成功。执行器收到事件后仍须通过 Python Worker 采集新快照。</div>
+    </section>
+
+    <section id="mcp">
+      <p class="kicker">14 · MCP</p>
+      <h2>可选 MCP 只读集成</h2>
+      <p>安装 <code>.[mcp]</code> 可选依赖后，可通过标准输入输出启动 <code>solidworks-library-mcp</code>。服务不连接 SolidWorks、不执行计划、不修改 CAD、不读取模型 API Key。</p>
+      <table>
+        <thead><tr><th>MCP 工具</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td><code>search_library</code></td><td>按本地索引检索文档。</td></tr>
+          <tr><td><code>get_document_manifest</code></td><td>读取最近一次成功参数快照。</td></tr>
+          <tr><td><code>inspect_document_quality</code></td><td>读取质量与引用问题。</td></tr>
+          <tr><td><code>get_dependency_graph</code></td><td>返回装配/工程图引用关系。</td></tr>
+          <tr><td><code>find_similar_documents</code></td><td>返回带解释的相似候选。</td></tr>
+          <tr><td><code>compare_documents</code></td><td>对比两个参数 Manifest。</td></tr>
+          <tr><td><code>get_modeling_capabilities</code></td><td>返回桌面助手公开工具 schema。</td></tr>
+        </tbody>
+      </table>
+      <p class="small">MCP 返回的是数据库快照，可能落后于磁盘；调用方必须检查 <code>parameter_status</code>、<code>file_sha256</code> 和更新时间。</p>
+    </section>
+
+    <section id="data">
+      <p class="kicker">15 · Data model</p>
+      <h2>数据目录、数据库与审计</h2>
+      <h3>用户数据位置</h3>
+      <table>
+        <thead><tr><th>数据</th><th>默认位置</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>根目录</td><td><code>%LOCALAPPDATA%\SolidWorksAIAssistant</code></td><td>可用 <code>SW_ASSISTANT_DATA_DIR</code> 覆盖。</td></tr>
+          <tr><td>设置</td><td><code>settings.json</code></td><td>API Key 与 Document Manager Key 只保存 DPAPI 密文。</td></tr>
+          <tr><td>模型库</td><td><code>library.db</code></td><td>schema 3；文档、Manifest、任务、语义、配方、能力等。</td></tr>
+          <tr><td>历史</td><td><code>history.db</code></td><td>计划、需求、状态、错误和更新时间。</td></tr>
+          <tr><td>日志</td><td><code>logs\</code></td><td>JSONL 审计与诊断；字段级脱敏。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>library.db 表</h3>
+      <table>
+        <thead><tr><th>表</th><th>职责</th></tr></thead>
+        <tbody>
+          <tr><td><code>schema_info</code></td><td>数据库版本；当前为 3，未知更高版本拒绝启动。</td></tr>
+          <tr><td><code>library_roots</code></td><td>扫描根目录、递归配置和最近扫描时间。</td></tr>
+          <tr><td><code>documents</code></td><td>文件主记录、指纹、完整哈希、参数哈希、状态和缺失标志。</td></tr>
+          <tr><td><code>manifest_snapshots</code></td><td>按文档和参数哈希去重保存完整 Manifest。</td></tr>
+          <tr><td><code>document_events</code></td><td>added/changed/restored/missing/读取等文档事件。</td></tr>
+          <tr><td><code>tags</code> / <code>document_tags</code></td><td>标签和文档多对多关联。</td></tr>
+          <tr><td><code>jobs</code> / <code>job_items</code></td><td>持久任务、幂等任务项、租约、心跳、取消和结果。</td></tr>
+          <tr><td><code>semantic_documents</code></td><td>规范搜索文本、字段词项和索引版本。</td></tr>
+          <tr><td><code>demonstration_sessions</code> / <code>demonstration_actions</code></td><td>示教上下文、命令序列和前后差异。</td></tr>
+          <tr><td><code>recipes</code></td><td>审批状态、上下文约束、步骤、风险和回放统计。</td></tr>
+          <tr><td><code>capability_runs</code></td><td>版本能力、环境标签、证据和运行结果。</td></tr>
+          <tr><td><code>selection_references</code></td><td>按文档和别名保存 SolidWorks 持久引用。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>一致性与迁移</h3>
+      <ul>
+        <li>SQLite 开启外键、WAL 和 <code>synchronous=NORMAL</code>；每线程独立连接，最外层事务提交/回滚。</li>
+        <li>schema 1/2 单向事务升级到 3；未知高版本拒绝猜测迁移。</li>
+        <li>旧版 <code>old/</code> 数据由专用只读迁移器导入；稳定 legacy ID 防重复。</li>
+        <li>旧 DPAPI 密文不复制；新用户必须重新输入凭据。</li>
+        <li>计划失败也写入历史，恢复替代后会同步更新保存的计划 JSON。</li>
+      </ul>
+    </section>
+
+    <section id="security">
+      <p class="kicker">16 · Security and privacy</p>
+      <h2>安全、隐私与防误操作设计</h2>
+      <div class="grid grid-2">
+        <div class="card"><h3>凭据</h3><ul><li>Windows DPAPI 当前用户绑定。</li><li>不可解密时进入“需要重新输入”，不能保存空 Key 覆盖旧状态。</li><li>Authorization、API Key、Document Manager Key 和 DPAPI 密文不进日志。</li></ul></div>
+        <div class="card"><h3>网络</h3><ul><li>只有点击生成/修复才调用模型。</li><li>API 地址必须是完整 HTTP/HTTPS URL，不能嵌用户名、密码或 fragment。</li><li>禁止重定向、限制超时与响应大小。</li></ul></div>
+        <div class="card"><h3>文件写入</h3><ul><li>源 CAD 永不作为目标写入。</li><li>目标必须不存在，父目录必须存在。</li><li>临时路径验证、源哈希锁、非空输出和发布后哈希。</li><li>装配体必须 Pack and Go。</li></ul></div>
+        <div class="card"><h3>模型与 UI</h3><ul><li>模型文本按纯文本渲染，不能注入 HTML。</li><li>公开模型工具与内部写命令严格分开。</li><li>恢复上下文对文件路径和凭据字段脱敏。</li><li>不以命令字符串相同永久封禁几何操作。</li></ul></div>
+      </div>
+      <h3>风险控制重点</h3>
+      <ul>
+        <li>同一 SolidWorks 命令在不同文档、配置、选择、拓扑和前序特征下含义不同，因此失败学习必须带上下文，不能建立全局字符串黑名单。</li>
+        <li>环境/COM/超时/文件锁错误不能污染几何失败经验。</li>
+        <li>C# 事件、COM API 返回值、相似度和参数哈希都只是证据的一部分，不是单独成功证明。</li>
+        <li>真实写测试必须使用临时夹具，不得直接使用生产 CAD 文件。</li>
+      </ul>
+    </section>
+
+    <section id="validation">
+      <p class="kicker">17 · Verification evidence</p>
+      <h2>自动化测试与 SolidWorks 实机验证</h2>
+      <h3>源码门禁</h3>
+      <div class="grid grid-4">
+        <div class="card metric"><b>159 / 159</b><span>pytest</span></div>
+        <div class="card metric"><b>0</b><span>Ruff 问题</span></div>
+        <div class="card metric"><b>54 / 54</b><span>mypy 源码文件无问题</span></div>
+        <div class="card metric"><b>7 / 7</b><span>C# 自包含测试</span></div>
+      </div>
+      <p>测试覆盖领域序列化、工具顺序、失败恢复、请求失效、Worker 中断、设置加密、数据库迁移、模型库增量与取消、Manifest、派生、Pack and Go、导出、MCP、12 项高级能力、COM 辅助逻辑和 UI 状态。Python 测试不访问互联网、不启动 SolidWorks。</p>
+
+      <h3>本机实机基线</h3>
+      <table>
+        <thead><tr><th>项目</th><th>验证结果</th></tr></thead>
+        <tbody>
+          <tr><td>环境</td><td>SolidWorks Premium 2025 SP5.0；修订号 33.5.0；Interop 33.5.0.53。</td></tr>
+          <tr><td>基础建模</td><td>M4×30 ISO 4762 的 12 步建模、后验体积和不保存关闭通过。</td></tr>
+          <tr><td>产品族</td><td>规格-A 8 mm/A、规格-B 12 mm/B；尺寸、配置属性、重开和源哈希通过。</td></tr>
+          <tr><td>装配体</td><td>读取 2 个组件、固定/自由状态、无缺失引用和干涉 API 调用。</td></tr>
+          <tr><td>配合</td><td>恢复两个持久平面引用，CreateMateData/CreateMate 创建“平行1”，重建后撤销且源哈希不变。</td></tr>
+          <tr><td>工程图</td><td>主/俯/右/等轴测、剖视、BOM、自动气泡、模型尺寸导入和重开 Manifest 检查。</td></tr>
+          <tr><td>导出</td><td>PDF 46,534 字节、DWG 39,568 字节，均非空且有 SHA-256。</td></tr>
+          <tr><td>PMI</td><td>API 路径可调用；当前夹具无 PMI，0 条记录不视为带 PMI 验收。</td></tr>
+          <tr><td>C# Add-in</td><td>自动 ConnectToSW、SetAddinCallbackInfo2、Task Pane、上下文事件、25/25 能力通过。</td></tr>
+          <tr><td>PDM</td><td>本机未安装 PDM COM；适配器正确报告不可用。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>代码规模快照</h3>
+      <table>
+        <thead><tr><th>类别</th><th>文件</th><th>约物理行数</th></tr></thead>
+        <tbody>
+          <tr><td>Python 应用</td><td>54</td><td>12,360</td></tr>
+          <tr><td>Python 测试</td><td>24</td><td>3,185</td></tr>
+          <tr><td>C# 源码</td><td>12</td><td>2,048</td></tr>
+          <tr><td>PowerShell 脚本</td><td>8</td><td>731</td></tr>
+          <tr><td>设计 Markdown</td><td>21</td><td>597</td></tr>
+        </tbody>
+      </table>
+      <p class="small">行数为报告生成时的物理行统计，用于规模描述，不作为质量指标。</p>
+    </section>
+
+    <section id="release">
+      <p class="kicker">18 · Build and release</p>
+      <h2>构建、安装与迁移交付</h2>
+      <h3>当前发布产物</h3>
+      <table>
+        <thead><tr><th>产物</th><th>大小</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td><code>SolidWorksAssistant-3.0.0-Setup.exe</code></td><td>51,446,784 字节</td><td>IExpress 单文件安装器；隔离安装/卸载和内部哈希通过；未签名。</td></tr>
+          <tr><td><code>SolidWorksAssistant-3.0.0-portable.zip</code></td><td>51,527,965 字节</td><td>便携包；内容审计通过。</td></tr>
+          <tr><td><code>release-manifest.json</code></td><td>813 字节</td><td>发布清单。</td></tr>
+          <tr><td><code>SHA256SUMS.txt</code></td><td>209 字节</td><td>发布文件校验。</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>PyInstaller one-folder EXE 冷启动进入 Qt 输入空闲，并产生有效主窗口句柄。</li>
+        <li>发布内容 210 个文件，数据库、日志、CAD、PDB 和凭据计数为 0。</li>
+        <li>安装器包含控制面板卸载项和 Event Bridge 注册载荷。</li>
+        <li>未配置商业 Authenticode 证书，状态为 NotSigned。</li>
+        <li>独立 Codex 开发迁移 ZIP 另含源码、测试、文档和交接 README，不含用户数据与二进制构建物。</li>
+      </ul>
+    </section>
+
+    <section id="operations">
+      <p class="kicker">19 · User journeys</p>
+      <h2>安装、配置与典型使用流程</h2>
+      <h3>开发环境启动</h3>
+      <pre class="filetree">python -m pip install -e ".[dev]"
+python -m sw_assistant
+
+# 或双击
+run.bat</pre>
+      <p>模型服务在“设置 → 模型服务”配置；API Key 只显示输入框，不回显旧值。无在线模型配置时仍可使用离线规划和不依赖网络的本地功能。</p>
+
+      <h3>典型流程 A：自然语言生成简单零件</h3>
+      <ol>
+        <li>在智能建模页输入尺寸明确的需求。</li>
+        <li>查看规划阶段、计划摘要、二维轮廓和工具参数。</li>
+        <li>选择“执行下一步”或“执行全部”；连续执行仍逐步验证。</li>
+        <li>失败时选择五种恢复方式之一。</li>
+        <li>完成后文档保持未保存，交由用户检查并决定保存。</li>
+      </ol>
+
+      <h3>典型流程 B：建立本地模型库</h3>
+      <ol>
+        <li>选择包含 SolidWorks 文件的目录，先执行“快速扫描”。</li>
+        <li>确认文件数量和状态后，再执行“深度读取全部参数”。</li>
+        <li>观察总数、当前文件、成功/跳过/失败、耗时和停止按钮。</li>
+        <li>通过列表检索、分页和 Manifest 详情检查参数。</li>
+        <li>按需运行健康、语义、相似度、依赖或快照对比。</li>
+      </ol>
+
+      <h3>典型流程 C：从已有模型安全派生</h3>
+      <ol>
+        <li>选择已索引模型并确认参数状态和源哈希。</li>
+        <li>零件可选择原样复制、修改副本参数或生成产品族。</li>
+        <li>装配体必须使用 Pack and Go；工程图普通复制被拒绝。</li>
+        <li>选择全新目标路径，等待 staging、验证和发布。</li>
+        <li>输出完成后复核目标哈希、Manifest 和源文件不变证据。</li>
+      </ol>
+
+      <h3>典型流程 D：人工介入后继续</h3>
+      <ol>
+        <li>系统在失败步骤暂停并保留成功前缀。</li>
+        <li>根据卡片提示在 SolidWorks 调整选择、模板、草图或特征。</li>
+        <li>点击“人工完成后验证”，系统采集新快照。</li>
+        <li>后验通过后继续；不通过则仍停留在恢复状态。</li>
+      </ol>
+    </section>
+
+    <section id="limitations">
+      <p class="kicker">20 · Known limitations</p>
+      <h2>已知限制与未验证条件</h2>
+      <table>
+        <thead><tr><th>项目</th><th>当前边界</th><th>系统行为</th></tr></thead>
+        <tbody>
+          <tr><td>复杂特征</td><td>圆角、孔向导、曲面、放样、扫描、真实螺旋牙型尚未进入公开工具协议。</td><td>不猜测重绘；优先复制/参数派生。</td></tr>
+          <tr><td>工程图复制</td><td>普通工程图文件复制未开放。</td><td>明确拒绝；使用工程图生成或格式导出。</td></tr>
+          <tr><td>多版本</td><td>当前只实测 SolidWorks 2025 SP5.0。</td><td>2024/2026 保持未验证，等待能力实验室实机回归。</td></tr>
+          <tr><td>PMI</td><td>当前实机夹具不含 PMI。</td><td>API 可调用但不把 0 条记录标记为完整验收。</td></tr>
+          <tr><td>PDM</td><td>本机没有 PDM Professional COM。</td><td>只读适配器返回不可用。</td></tr>
+          <tr><td>Document Manager</td><td>需要用户自有合法许可证密钥。</td><td>未配置时按钮禁用；不启动 COM 猜测。</td></tr>
+          <tr><td>批处理 UI</td><td>底层为通用引擎，但尚无任意工作流的“新建批任务”编辑器。</td><td>当前由健康诊断等已接入入口创建任务。</td></tr>
+          <tr><td>停止/回滚</td><td>同步原子 COM 调用没有通用跨进程回滚。</td><td>中断 Worker、阻止后续步骤并要求重新快照。</td></tr>
+          <tr><td>发布签名</td><td>Setup 未使用商业 Authenticode。</td><td>可安装但不能标记为已签名正式发行。</td></tr>
+          <tr><td>在线更新</td><td>当前没有自动更新和日志自动清理门禁。</td><td>由人工构建/发布流程管理。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="recommendations">
+      <p class="kicker">21 · Recommendations</p>
+      <h2>后续迭代建议</h2>
+      <ol>
+        <li><strong>优先补齐多版本实机矩阵：</strong>2024/2026 的 Add-in 加载、模板、草图、旋转、Pack and Go、工程图和导出证据。</li>
+        <li><strong>增加真实 PMI/DimXpert 与制造夹具：</strong>覆盖 GD&amp;T、孔/基准、无效标注及 DFM 人工复核闭环。</li>
+        <li><strong>建设通用批任务编辑器：</strong>在现有 Job/JobItem 引擎上提供工作流模板、输入预览、风险检查和逐项审批。</li>
+        <li><strong>扩展可验证建模工具：</strong>优先孔向导、圆角/倒角、线性/圆周阵列；每项同时提交 schema、COM、后验、Fake 测试和实机夹具。</li>
+        <li><strong>完善大型装配体验证：</strong>轻化、压缩、子装配、缺引用、Toolbox、多配置和性能基线。</li>
+        <li><strong>企业集成沙箱：</strong>在合法 PDM Professional 与 Document Manager 环境完成只读权限/版本/引用矩阵。</li>
+        <li><strong>发布工程：</strong>引入强名称和 Authenticode 私有签名流程、干净 Windows 用户 DPAPI 回归和安装升级测试。</li>
+        <li><strong>可选语义后端：</strong>保留当前本地可解释检索，按需增加本地向量后端；向量结果仍需字段证据与参数状态。</li>
+      </ol>
+      <div class="callout success"><strong>建议维持的架构纪律：</strong>不要让 C# Add-in 承担写建模，不要让模型直接访问 COM，不要为“更自动”取消单步后验，也不要把 <code>old/</code> 旧执行器重新接成新入口。</div>
+    </section>
+
+    <section id="appendix">
+      <p class="kicker">22 · Appendix</p>
+      <h2>附录：目录、状态与术语</h2>
+      <h3>核心目录</h3>
+      <pre class="filetree">solidworks_tools/
+├─ src/sw_assistant/        当前 Python 桌面应用
+│  ├─ advanced/            12 项高级能力服务
+│  ├─ automation/          持久 Job/JobItem
+│  ├─ domain/              领域模型与错误
+│  ├─ execution/           单步状态机和恢复
+│  ├─ infrastructure/      设置、DPAPI、审计、历史
+│  ├─ integration/         只读 MCP
+│  ├─ library/             扫描、参数、分析、派生和导出
+│  ├─ planning/            在线/离线规划
+│  ├─ solidworks/          COM Worker、Gateway、事件消费
+│  └─ ui/                  PySide6 界面
+├─ src-dotnet/              C# Event Bridge Add-in
+├─ tests/                   纯 Python、Fake 边界和 UI 测试
+├─ scripts/                 构建、注册、诊断和实机冒烟
+├─ installer/               安装/卸载与 IExpress 构建
+├─ docs/                    设计、验收和本报告
+├─ backups/                 迭代基线说明和清单
+└─ old/                     旧版归档，仅迁移/对照</pre>
+
+      <h3>关键状态词</h3>
+      <table>
+        <thead><tr><th>术语</th><th>含义</th></tr></thead>
+        <tbody>
+          <tr><td>ready</td><td>计划已通过本地校验，尚未执行。</td></tr>
+          <tr><td>paused</td><td>步骤失败或需要人工处理；成功前缀保留。</td></tr>
+          <tr><td>stale</td><td>文件快速指纹变化，已保存参数可能过期。</td></tr>
+          <tr><td>metadata_ready</td><td>Document Manager 元数据可用，但不是完整 COM Manifest。</td></tr>
+          <tr><td>unavailable</td><td>许可证、版本、文档类型或 API 能力明确不满足。</td></tr>
+          <tr><td>unknown</td><td>尚无足够证据，不等于失败或可用。</td></tr>
+          <tr><td>persistent reference</td><td>SolidWorks 对选中对象的文档内持久引用；拓扑变化仍可能失效。</td></tr>
+          <tr><td>postcondition</td><td>工具执行后必须从新快照观察到的真实变化。</td></tr>
+          <tr><td>lease</td><td>持久任务执行权的限时所有权；过期后可安全回收。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>报告依据</h3>
+      <p>本报告核对了当前 <code>src/sw_assistant</code>、<code>src-dotnet</code>、<code>tests</code>、<code>installer</code>、<code>scripts</code>、数据库建表代码、UI 控件与菜单，以及 <code>docs/</code> 中的架构、实现状态、验证和操作文档。设计文档与源码冲突时，以当前代码和更严格的安全边界为准。</p>
+    </section>
+
+    <div class="footer">SolidWorks 智能建模助手 v3.0.0 · 系统功能报告 · 生成日期 2026-08-11 · UTF-8 离线 HTML</div>
+  </main>
+</div>
+</body>
+</html>
